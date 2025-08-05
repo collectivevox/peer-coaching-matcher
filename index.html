@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Peer Coaching Matcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .member-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .member-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .member-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .member-details {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .matching-groups {
+            margin-top: 30px;
+        }
+
+        .group-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2196F3;
+        }
+
+        .group-card h3 {
+            color: #1976D2;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .group-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .group-member {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .match-reason {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-style: italic;
+            color: #856404;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .export-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤝 AI Peer Coaching Matcher</h1>
+            <p>Intelligently match professionals for optimal peer coaching sessions</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Member Registration Section -->
+            <div class="section">
+                <h2>👤 Add New Member</h2>
+                <form id="memberForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="country">Country *</label>
+                            <select id="country" name="country" required>
+                                <option value="">Select Country</option>
+                                <option value="USA">United States</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Germany">Germany</option>
+                                <option value="France">France</option>
+                                <option value="Netherlands">Netherlands</option>
+                                <option value="Singapore">Singapore</option>
+                                <option value="Japan">Japan</option>
+                                <option value="Brazil">Brazil</option>
+                                <option value="India">India</option>
+                                <option value="South Africa">South Africa</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="industry">Industry *</label>
+                            <select id="industry" name="industry" required>
+                                <option value="">Select Industry</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Education">Education</option>
+                                <option value="Manufacturing">Manufacturing</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Consulting">Consulting</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Legal">Legal</option>
+                                <option value="Real Estate">Real Estate</option>
+                                <option value="Non-Profit">Non-Profit</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="role">Role/Position *</label>
+                            <select id="role" name="role" required>
+                                <option value="">Select Role</option>
+                                <option value="CEO/Founder">CEO/Founder</option>
+                                <option value="C-Suite">C-Suite Executive</option>
+                                <option value="VP/Director">VP/Director</option>
+                                <option value="Senior Manager">Senior Manager</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Team Lead">Team Lead</option>
+                                <option value="Senior Professional">Senior Professional</option>
+                                <option value="Professional">Professional</option>
+                                <option value="Consultant">Consultant</option>
+                                <option value="Entrepreneur">Entrepreneur</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="experience">Years of Experience *</label>
+                            <select id="experience" name="experience" required>
+                                <option value="">Select Experience</option>
+                                <option value="0-2">0-2 years</option>
+                                <option value="3-5">3-5 years</option>
+                                <option value="6-10">6-10 years</option>
+                                <option value="11-15">11-15 years</option>
+                                <option value="16-20">16-20 years</option>
+                                <option value="20+">20+ years</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expertise">Areas of Expertise (separate with commas)</label>
+                        <input type="text" id="expertise" name="expertise" placeholder="e.g., Leadership, Strategy, Marketing, Operations">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="challenges">Primary Challenge Areas (separate with commas)</label>
+                        <input type="text" id="challenges" name="challenges" placeholder="e.g., Team Management, Scaling, Work-Life Balance">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="goals">Professional Goals</label>
+                        <textarea id="goals" name="goals" rows="3" placeholder="What are you looking to achieve?"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Add Member</button>
+                </form>
+            </div>
+
+            <!-- Current Members Section -->
+            <div class="section">
+                <h2>📋 Current Members</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalMembers">0</div>
+                        <div class="stat-label">Total Members</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalCountries">0</div>
+                        <div class="stat-label">Countries</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalIndustries">0</div>
+                        <div class="stat-label">Industries</div>
+                    </div>
+                </div>
+                <div class="member-list" id="memberList"></div>
+            </div>
+
+            <!-- Matching Section -->
+            <div class="section">
+                <h2>🎯 Generate Coaching Groups</h2>
+                <p style="margin-bottom: 20px;">Our AI algorithm creates optimal groups of 3 based on complementary backgrounds, diverse perspectives, and balanced expertise levels.</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="matchingStrategy">Matching Strategy</label>
+                        <select id="matchingStrategy">
+                            <option value="balanced">Balanced Diversity (Recommended)</option>
+                            <option value="experience">Experience-Based</option>
+                            <option value="industry">Industry Cross-Pollination</option>
+                            <option value="geographic">Geographic Diversity</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="minGroupSize">Minimum Group Size</label>
+                        <select id="minGroupSize">
+                            <option value="3">3 (Standard)</option>
+                            <option value="2">2 (Pairs)</option>
+                            <option value="4">4 (Extended)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button onclick="generateMatches()" class="btn">🚀 Generate Matches</button>
+                <button onclick="clearAll()" class="btn btn-secondary">Clear All Data</button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="section hidden" id="resultsSection">
+                <h2>✨ Matched Coaching Groups</h2>
+                <div class="matching-groups" id="matchingResults"></div>
+                
+                <div class="export-section">
+                    <h3>📤 Export Options</h3>
+                    <button onclick="exportToCSV()" class="btn">Export to CSV</button>
+                    <button onclick="exportToJSON()" class="btn btn-secondary">Export to JSON</button>
+                    <button onclick="generateEmailTemplate()" class="btn">Generate Email Templates</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let members = [];
+        let matchedGroups = [];
+
+        // Load data from memory on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSampleData();
+            updateMemberList();
+            updateStats();
+        });
+
+        // Member form submission
+        document.getElementById('memberForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const member = {
+                id: Date.now(),
+                name: formData.get('name'),
+                email: formData.get('email'),
+                country: formData.get('country'),
+                industry: formData.get('industry'),
+                role: formData.get('role'),
+                experience: formData.get('experience'),
+                expertise: formData.get('expertise').split(',').map(s => s.trim()).filter(s => s),
+                challenges: formData.get('challenges').split(',').map(s => s.trim()).filter(s => s),
+                goals: formData.get('goals'),
+                dateAdded: new Date().toISOString()
+            };
+            
+            members.push(member);
+            updateMemberList();
+            updateStats();
+            e.target.reset();
+            
+            // Show success message
+            showNotification('Member added successfully!', 'success');
+        });
+
+        function loadSampleData() {
+            if (members.length === 0) {
+                members = [
+                    {
+                        id: 1,
+                        name: "Sarah Chen",
+                        email: "sarah.chen@email.com",
+                        country: "Singapore",
+                        industry: "Technology",
+                        role: "VP/Director",
+                        experience: "11-15",
+                        expertise: ["Product Management", "Team Leadership", "Strategy"],
+                        challenges: ["Scaling Operations", "Remote Team Management"],
+                        goals: "Lead digital transformation initiatives",
+                        dateAdded: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        name: "Marcus Johnson",
+                        email: "marcus.j@email.com",
+                        country: "USA",
+                        industry: "Finance",
+                        role: "Senior Manager",
+                        experience: "6-10",
+                        expertise: ["Risk Management", "Analytics", "Compliance"],
+                        challenges: ["Work-Life Balance", "Career Advancement"],
+                        goals: "Transition to fintech leadership role",
+                        dateAdded: new Date().toISOString()
+                    },
+                    {
+                        id: 3,
+                        name: "Elena Rodriguez",
+                        email: "elena.r@email.com",
+                        country: "Spain",
+                        industry: "Marketing",
+                        role: "CEO/Founder",
+                        experience: "16-20",
+                        expertise: ["Brand Strategy", "Digital Marketing", "Entrepreneurship"],
+                        challenges: ["Fundraising", "International Expansion"],
+                        goals: "Scale startup to global markets",
+                        dateAdded: new Date().toISOString()
+                    },
+                    {
+                        id: 4,
+                        name: "David Kim",
+                        email: "david.kim@email.com",
+                        country: "South Korea",
+                        industry: "Healthcare",
+                        role: "Manager",
+                        experience: "3-5",
+                        expertise: ["Project Management", "Healthcare IT", "Process Improvement"],
+                        challenges: ["Team Leadership", "Stakeholder Management"],
+                        goals: "Advance to senior management position",
+                        dateAdded: new Date().toISOString()
+                    },
+                    {
+                        id: 5,
+                        name: "Amara Okafor",
+                        email: "amara.o@email.com",
+                        country: "Nigeria",
+                        industry: "Education",
+                        role: "Senior Professional",
+                        experience: "6-10",
+                        expertise: ["Curriculum Development", "Online Learning", "Training"],
+                        challenges: ["Technology Integration", "Change Management"],
+                        goals: "Lead educational technology initiatives",
+                        dateAdded: new Date().toISOString()
+                    },
+                    {
+                        id: 6,
+                        name: "James Thompson",
+                        email: "james.t@email.com",
+                        country: "Canada",
+                        industry: "Manufacturing",
+                        role: "C-Suite",
+                        experience: "20+",
+                        expertise: ["Operations Excellence", "Supply Chain", "Lean Management"],
+                        challenges: ["Digital Transformation", "Sustainability"],
+                        goals: "Modernize traditional manufacturing processes",
+                        dateAdded: new Date().toISOString()
+                    }
+                ];
+            }
+        }
+
+        function updateMemberList() {
+            const memberList = document.getElementById('memberList');
+            memberList.innerHTML = '';
+            
+            members.forEach(member => {
+                const memberCard = document.createElement('div');
+                memberCard.className = 'member-card';
+                memberCard.innerHTML = `
+                    <h3>${member.name}</h3>
+                    <div class="member-details">
+                        <p><strong>Country:</strong> ${member.country}</p>
+                        <p><strong>Industry:</strong> ${member.industry}</p>
+                        <p><strong>Role:</strong> ${member.role}</p>
+                        <p><strong>Experience:</strong> ${member.experience} years</p>
+                        <p><strong>Expertise:</strong> ${member.expertise.join(', ')}</p>
+                        <p><strong>Challenges:</strong> ${member.challenges.join(', ')}</p>
+                        <button onclick="removeMember(${member.id})" class="btn btn-danger" style="margin-top: 10px; padding: 8px 16px; font-size: 14px;">Remove</button>
+                    </div>
+                `;
+                memberList.appendChild(memberCard);
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('totalMembers').textContent = members.length;
+            
+            const countries = new Set(members.map(m => m.country));
+            document.getElementById('totalCountries').textContent = countries.size;
+            
+            const industries = new Set(members.map(m => m.industry));
+            document.getElementById('totalIndustries').textContent = industries.size;
+        }
+
+        function removeMember(id) {
+            members = members.filter(m => m.id !== id);
+            updateMemberList();
+            updateStats();
+            showNotification('Member removed successfully!', 'success');
+        }
+
+        function generateMatches() {
+            if (members.length < 3) {
+                showNotification('Need at least 3 members to generate matches!', 'warning');
+                return;
+            }
+
+            const strategy = document.getElementById('matchingStrategy').value;
+            const minGroupSize = parseInt(document.getElementById('minGroupSize').value);
+            
+            // Show loading
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.remove('hidden');
+            document.getElementById('matchingResults').innerHTML = '<div class="loading"><div class="spinner"></div>Generating optimal matches...</div>';
+
+            // Simulate AI processing time
+            setTimeout(() => {
+                matchedGroups = createOptimalGroups(members, strategy, minGroupSize);
+                displayMatches();
+            }, 2000);
+        }
+
+        function createOptimalGroups(memberList, strategy, groupSize) {
+            const groups = [];
+            const availableMembers = [...memberList];
+            
+            // Shuffle for randomization
+            for (let i = availableMembers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [availableMembers[i], availableMembers[j]] = [availableMembers[j], availableMembers[i]];
+            }
+            
+            while (availableMembers.length >= groupSize) {
+                const group = [];
+                const firstMember = availableMembers.shift();
+                group.push(firstMember);
+                
+                // Find complementary members based on strategy
+                for (let i = 1; i < groupSize; i++) {
+                    const bestMatch = findBestMatch(firstMember, group, availableMembers, strategy);
+                    if (bestMatch) {
+                        group.push(bestMatch);
+                        availableMembers.splice(availableMembers.indexOf(bestMatch), 1);
+                    } else if (availableMembers.length > 0) {
+                        // Fallback to any available member
+                        group.push(availableMembers.shift());
+                    }
+                }
+                
+                if (group.length >= groupSize) {
+                    groups.push({
+                        id: groups.length + 1,
+                        members: group,
+                        matchReason: generateMatchReason(group, strategy),
+                        diversity: calculateDiversity(group)
+                    });
+                }
+            }
+            
+            return groups;
+        }
+
+        function findBestMatch(anchor, currentGroup, candidates, strategy) {
+            let bestCandidate = null;
+            let bestScore =
