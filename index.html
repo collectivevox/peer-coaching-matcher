@@ -579,7 +579,7 @@
             'use strict';
             
             // Configuration - CHANGE THIS PASSWORD!
-            const ACCESS_PASSWORD = 'FairyHairy1!'; 
+            const ACCESS_PASSWORD = 'PeerCoach2024!'; 
             
             function requestAccess() {
                 const password = prompt('🔒 Enter access password for Peer Coaching Matcher:');
@@ -657,9 +657,15 @@
             displayProfiles();
         }
 
-        // Save data to localStorage
+        // Save data to localStorage with improved error handling
         function saveData() {
-            localStorage.setItem('coachingProfiles', JSON.stringify(profiles));
+            try {
+                localStorage.setItem('coachingProfiles', JSON.stringify(profiles));
+                console.log('Data saved to localStorage:', profiles.length, 'profiles'); // Debug log
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+                showMessage('Error saving data. Please try again.', 'error');
+            }
         }
 
         // Tab switching
@@ -734,74 +740,88 @@
             updateTagsDisplay(document.getElementById('expertiseTags'), expertise);
             updateTagsDisplay(document.getElementById('challengesTags'), challenges);
             updateTagsDisplay(document.getElementById('goalsTags'), goals);
-        }
-
-        // Edit Profile Function
-        function editProfile(id) {
-            const profile = profiles.find(p => p.id === id);
-            if (!profile) return;
             
-            // Switch to add profile tab
-            switchTab('add-profile');
-            
-            // Populate the form with existing data
-            document.getElementById('name').value = profile.name;
-            document.getElementById('email').value = profile.email;
-            document.getElementById('country').value = profile.country;
-            document.getElementById('industry').value = profile.industry;
-            document.getElementById('role').value = profile.role;
-            document.getElementById('experience').value = profile.experience;
-            
-            // Set the tag arrays
-            expertise = [...profile.expertise];
-            challenges = [...profile.challenges];
-            goals = [...profile.goals];
-            
-            // Update tag displays
-            updateTagsDisplay(document.getElementById('expertiseTags'), expertise);
-            updateTagsDisplay(document.getElementById('challengesTags'), challenges);
-            updateTagsDisplay(document.getElementById('goalsTags'), goals);
-            
-            // Change form to edit mode
-            const form = document.getElementById('profileForm');
-            const submitButton = form.querySelector('button[type="submit"]');
-            submitButton.textContent = 'Update Profile';
-            submitButton.className = 'btn btn-primary';
-            
-            // Add hidden field for profile ID
-            let hiddenId = document.getElementById('editingId');
-            if (!hiddenId) {
-                hiddenId = document.createElement('input');
-                hiddenId.type = 'hidden';
-                hiddenId.id = 'editingId';
-                form.appendChild(hiddenId);
-            }
-            hiddenId.value = id;
-            
-            // Add cancel edit button
-            let cancelButton = document.getElementById('cancelEdit');
-            if (!cancelButton) {
-                cancelButton = document.createElement('button');
-                cancelButton.type = 'button';
-                cancelButton.id = 'cancelEdit';
-                cancelButton.className = 'btn btn-secondary';
-                cancelButton.textContent = 'Cancel Edit';
-                cancelButton.onclick = cancelEdit;
-                submitButton.parentNode.insertBefore(cancelButton, submitButton.nextSibling);
-            }
-            cancelButton.style.display = 'inline-block';
-        }
-
-        function cancelEdit() {
-            clearForm();
+            // Reset form to add mode
             const submitButton = document.querySelector('#profileForm button[type="submit"]');
             submitButton.textContent = 'Add Profile';
             
             const hiddenId = document.getElementById('editingId');
-            if (hiddenId) hiddenId.value = '';
+            if (hiddenId) hiddenId.remove();
             
             const cancelButton = document.getElementById('cancelEdit');
             if (cancelButton) cancelButton.style.display = 'none';
+        }
+
+        // IMPROVED Edit Profile Function
+        function editProfile(id) {
+            const profile = profiles.find(p => p.id === id);
+            if (!profile) {
+                console.error('Profile not found:', id);
+                return;
+            }
+            
+            console.log('Editing profile:', profile); // Debug log
+            
+            // Switch to add profile tab
+            switchTab('add-profile');
+            
+            // Clear existing form first
+            clearForm();
+            
+            // Small delay to ensure form is cleared
+            setTimeout(() => {
+                // Populate the form with existing data
+                document.getElementById('name').value = profile.name || '';
+                document.getElementById('email').value = profile.email || '';
+                document.getElementById('country').value = profile.country || '';
+                document.getElementById('industry').value = profile.industry || '';
+                document.getElementById('role').value = profile.role || '';
+                document.getElementById('experience').value = profile.experience || '';
+                
+                // Set the tag arrays with proper fallbacks
+                expertise = profile.expertise ? [...profile.expertise] : [];
+                challenges = profile.challenges ? [...profile.challenges] : [];
+                goals = profile.goals ? [...profile.goals] : [];
+                
+                // Update tag displays
+                updateTagsDisplay(document.getElementById('expertiseTags'), expertise);
+                updateTagsDisplay(document.getElementById('challengesTags'), challenges);
+                updateTagsDisplay(document.getElementById('goalsTags'), goals);
+                
+                // Change form to edit mode
+                const form = document.getElementById('profileForm');
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.textContent = 'Update Profile';
+                
+                // Add hidden field for profile ID
+                let hiddenId = document.getElementById('editingId');
+                if (!hiddenId) {
+                    hiddenId = document.createElement('input');
+                    hiddenId.type = 'hidden';
+                    hiddenId.id = 'editingId';
+                    hiddenId.name = 'editingId';
+                    form.appendChild(hiddenId);
+                }
+                hiddenId.value = id;
+                
+                // Show cancel edit button
+                let cancelButton = document.getElementById('cancelEdit');
+                if (!cancelButton) {
+                    cancelButton = document.createElement('button');
+                    cancelButton.type = 'button';
+                    cancelButton.id = 'cancelEdit';
+                    cancelButton.className = 'btn btn-secondary';
+                    cancelButton.textContent = 'Cancel Edit';
+                    cancelButton.onclick = cancelEdit;
+                    cancelButton.style.marginLeft = '10px';
+                    submitButton.parentNode.insertBefore(cancelButton, submitButton.nextSibling);
+                }
+                cancelButton.style.display = 'inline-block';
+            }, 100);
+        }
+
+        function cancelEdit() {
+            clearForm();
         }
 
         // Profile management
@@ -1074,6 +1094,15 @@
             }, 3000);
         }
 
+        // Debug functions
+        function debugProfileData() {
+            console.log('Current profiles:', profiles);
+            console.log('LocalStorage data:', localStorage.getItem('coachingProfiles'));
+        }
+
+        // Make debug function accessible from browser console
+        window.debugProfiles = debugProfileData;
+
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
             // Load saved data
@@ -1084,13 +1113,14 @@
             setupTagInput('challengesInput', 'challengesTags', challenges);
             setupTagInput('goalsInput', 'goalsTags', goals);
             
-            // Setup form submission
+            // IMPROVED Form submission handler
             document.getElementById('profileForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 const formData = new FormData(this);
                 const profileData = Object.fromEntries(formData.entries());
-                const editingId = document.getElementById('editingId')?.value;
+                const editingIdField = document.getElementById('editingId');
+                const editingId = editingIdField ? editingIdField.value : '';
                 
                 // Validate required fields
                 if (!profileData.name || !profileData.email || !profileData.country || 
@@ -1099,8 +1129,8 @@
                     return;
                 }
                 
-                if (editingId) {
-                    // Update existing profile
+                if (editingId && editingId !== '') {
+                    // UPDATE EXISTING PROFILE
                     const profileIndex = profiles.findIndex(p => p.id == editingId);
                     if (profileIndex !== -1) {
                         // Check for duplicate email (excluding current profile)
@@ -1113,18 +1143,25 @@
                             return;
                         }
                         
+                        // Update the profile
                         profiles[profileIndex] = {
                             id: parseInt(editingId),
-                            ...profileData,
+                            name: profileData.name,
+                            email: profileData.email,
+                            country: profileData.country,
+                            industry: profileData.industry,
+                            role: profileData.role,
+                            experience: profileData.experience,
                             expertise: [...expertise],
                             challenges: [...challenges],
                             goals: [...goals]
                         };
                         
+                        console.log('Profile updated:', profiles[profileIndex]); // Debug log
                         showMessage('Profile updated successfully!', 'success');
                     }
                 } else {
-                    // Add new profile (existing logic)
+                    // ADD NEW PROFILE
                     if (profiles.some(p => p.email.toLowerCase() === profileData.email.toLowerCase())) {
                         showMessage('A profile with this email already exists.', 'error');
                         return;
@@ -1132,20 +1169,29 @@
                     
                     const newProfile = {
                         id: Date.now(),
-                        ...profileData,
+                        name: profileData.name,
+                        email: profileData.email,
+                        country: profileData.country,
+                        industry: profileData.industry,
+                        role: profileData.role,
+                        experience: profileData.experience,
                         expertise: [...expertise],
                         challenges: [...challenges],
                         goals: [...goals]
                     };
                     
                     profiles.push(newProfile);
+                    console.log('Profile added:', newProfile); // Debug log
                     showMessage('Profile added successfully!', 'success');
                 }
                 
+                // Save to localStorage and refresh displays
                 saveData();
                 updateProfileSelect();
                 displayProfiles();
-                cancelEdit(); // Reset form
+                
+                // Reset form
+                cancelEdit();
             });
         });
     </script>
