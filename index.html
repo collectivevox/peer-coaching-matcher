@@ -130,7 +130,7 @@
                 <input type="password" id="password" placeholder="Enter admin password">
             </div>
             <div style="text-align: center;">
-                <button class="btn btn-primary" onclick="checkPassword()">Login</button>
+                <button class="btn btn-primary" id="loginButton">Login</button>
             </div>
         </div>
 
@@ -216,20 +216,371 @@
     <script>
         // Password Protection
         const ACCESS_PASSWORD = 'CollectiveVox2025!'; // CHANGE THIS PASSWORD
-        let isAuthenticated = sessionStorage.getItem('admin_authenticated') === 'true';
-
-        (function() {
-            if (!isAuthenticated) {
-                document.getElementById('admin-interface').classList.add('hidden');
-                document.getElementById('password-prompt').classList.remove('hidden');
-            } else {
-                showAdminInterface();
-            }
-        })();
+        let isAuthenticated = false;
 
         function checkPassword() {
-            const password = document.getElementById('password').value;
+            console.log('Checking password...');
+            const passwordInput = document.getElementById('password');
+            if (!passwordInput) {
+                console.error('Password input not found');
+                showMessage('Error: Password field not found.', 'error');
+                return;
+            }
+            const password = passwordInput.value.trim();
             if (password === ACCESS_PASSWORD) {
+                console.log('Password correct, authenticating...');
                 sessionStorage.setItem('admin_authenticated', 'true');
                 isAuthenticated = true;
-                showAdminInterface
+                passwordInput.value = ''; // Clear password field
+                showAdminInterface();
+                showMessage('Login successful!', 'success');
+            } else {
+                console.log('Incorrect password');
+                showMessage('Incorrect password.', 'error');
+                passwordInput.value = ''; // Clear password field
+            }
+        }
+
+        function logout() {
+            console.log('Logging out...');
+            sessionStorage.removeItem('admin_authenticated');
+            isAuthenticated = false;
+            document.getElementById('admin-interface').classList.add('hidden');
+            document.getElementById('password-prompt').classList.remove('hidden');
+            document.getElementById('password').value = '';
+            showMessage('Logged out successfully.', 'success');
+        }
+
+        function showAdminInterface() {
+            console.log('Showing admin interface...');
+            document.getElementById('password-prompt').classList.add('hidden');
+            document.getElementById('admin-interface').classList.remove('hidden');
+            showSection('add-profile');
+        }
+
+        // Global variables
+        let profiles = [];
+
+        // Load data from localStorage
+        function loadData() {
+            console.log('Loading data from localStorage...');
+            const savedProfiles = localStorage.getItem('coachingProfiles');
+            if (savedProfiles) {
+                profiles = JSON.parse(savedProfiles);
+                console.log('Profiles loaded:', profiles);
+            }
+            displayProfiles();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            try {
+                localStorage.setItem('coachingProfiles', JSON.stringify(profiles));
+                console.log('Data saved to localStorage');
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showMessage('Error saving data.', 'error');
+            }
+        }
+
+        // Show specific section
+        function showSection(sectionId) {
+            console.log('Switching to section:', sectionId);
+            document.querySelectorAll('#admin-interface > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            if (sectionId === 'view-profiles') displayProfiles();
+            if (sectionId === 'add-profile') clearForm();
+        }
+
+        // Clear form
+        function clearForm() {
+            console.log('Clearing form...');
+            const form = document.getElementById('profileForm');
+            form.reset();
+            document.getElementById('submitButton').textContent = 'Add Profile';
+            document.getElementById('cancelEdit').classList.add('hidden');
+            document.getElementById('editingId').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('jobRole').value = '';
+            document.getElementById('industry').value = '';
+            document.getElementById('timeZone').value = '';
+            document.getElementById('challenge1').value = '';
+            document.getElementById('challenge2').value = '';
+            showMessage('Form cleared.', 'success');
+        }
+
+        // Edit profile
+        function editProfile(id) {
+            console.log('Editing profile ID:', id);
+            const profile = profiles.find(p => p.id === id);
+            if (!profile) {
+                console.error('Profile not found:', id);
+                showMessage('Profile not found.', 'error');
+                return;
+            }
+
+            clearForm();
+            showSection('add-profile');
+
+            document.getElementById('name').value = profile.name;
+            document.getElementById('email').value = profile.email;
+            document.getElementById('jobRole').value = profile.jobRole;
+            document.getElementById('industry').value = profile.industry;
+            document.getElementById('timeZone').value = profile.timeZone;
+            document.getElementById('challenge1').value = profile.challenges[0] || '';
+            document.getElementById('challenge2').value = profile.challenges[1] || '';
+            document.getElementById('submitButton').textContent = 'Update Profile';
+            document.getElementById('cancelEdit').classList.remove('hidden');
+            document.getElementById('editingId').value = id;
+            console.log('Edit form populated for profile:', profile);
+        }
+
+        // Form submission
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted...');
+            const formData = new FormData(this);
+            const profileData = {
+                name: formData.get('name').trim(),
+                email: formData.get('email').trim(),
+                jobRole: formData.get('jobRole').trim(),
+                industry: formData.get('industry'),
+                timeZone: formData.get('timeZone'),
+                challenges: [formData.get('challenge1').trim(), formData.get('challenge2').trim()]
+            };
+            const editingId = formData.get('editingId');
+
+            if (!profileData.name || !profileData.email || !profileData.jobRole || !profileData.industry || !profileData.timeZone || !profileData.challenges[0] || !profileData.challenges[1]) {
+                console.error('Validation failed: Missing required fields');
+                showMessage('Please fill in all fields.', 'error');
+                return;
+            }
+
+            if (editingId) {
+                // Edit mode
+                const profileIndex = profiles.findIndex(p => p.id == editingId);
+                if (profileIndex === -1) {
+                    console.error('Profile not found for ID:', editingId);
+                    showMessage('Profile not found for updating.', 'error');
+                    return;
+                }
+                if (profiles.some((p, i) => i !== profileIndex && p.email.toLowerCase() === profileData.email.toLowerCase())) {
+                    console.error('Duplicate email detected:', profileData.email);
+                    showMessage('A profile with this email already exists.', 'error');
+                    return;
+                }
+                profiles[profileIndex] = { id: Number(editingId), ...profileData };
+                console.log('Profile updated:', profiles[profileIndex]);
+                showMessage('Profile updated successfully!', 'success');
+            } else {
+                // Add mode
+                if (profiles.some(p => p.email.toLowerCase() === profileData.email.toLowerCase())) {
+                    console.error('Duplicate email detected:', profileData.email);
+                    showMessage('A profile with this email already exists.', 'error');
+                    return;
+                }
+                profiles.push({ id: Date.now(), ...profileData });
+                console.log('Profile added:', profileData);
+                showMessage('Profile added successfully!', 'success');
+            }
+
+            saveData();
+            displayProfiles();
+            clearForm();
+            showSection('view-profiles');
+        });
+
+        // Delete profile
+        function deleteProfile(id) {
+            console.log('Deleting profile ID:', id);
+            if (confirm('Are you sure you want to delete this profile?')) {
+                profiles = profiles.filter(p => p.id !== id);
+                saveData();
+                displayProfiles();
+                showMessage('Profile deleted successfully!', 'success');
+            }
+        }
+
+        // Display profiles
+        function displayProfiles() {
+            console.log('Displaying profiles, count:', profiles.length);
+            const container = document.getElementById('profilesList');
+            const countElement = document.getElementById('profileCount');
+            countElement.textContent = profiles.length;
+
+            container.innerHTML = profiles.length === 0
+                ? '<p>No profiles added yet.</p>'
+                : `<div class="profiles-grid">${profiles.map(p => `
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <span class="profile-name">${p.name}</span>
+                            <div>
+                                <button class="btn btn-primary btn-small" onclick="editProfile(${p.id})">Edit</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteProfile(${p.id})">Delete</button>
+                            </div>
+                        </div>
+                        <p>Email: ${p.email}</p>
+                        <p>Job Role: ${p.jobRole}</p>
+                        <p>Industry: ${p.industry}</p>
+                        <p>Time Zone: ${p.timeZone}</p>
+                        <p>Challenges: ${p.challenges.join(', ')}</p>
+                    </div>
+                `).join('')}</div>`;
+        }
+
+        // Matching logic
+        function generateMatches() {
+            console.log('Generating matches, profile count:', profiles.length);
+            if (profiles.length < 3) {
+                showMessage('Need at least 3 profiles to generate matches.', 'error');
+                return;
+            }
+
+            const groups = [];
+            const usedIds = new Set();
+            const remainingProfiles = [...profiles];
+
+            while (remainingProfiles.length >= 3) {
+                let bestScore = -Infinity;
+                let bestGroup = [];
+
+                // Try all combinations of 3
+                for (let i = 0; i < remainingProfiles.length - 2; i++) {
+                    for (let j = i + 1; j < remainingProfiles.length - 1; j++) {
+                        for (let k = j + 1; k < remainingProfiles.length; k++) {
+                            const tempGroup = [remainingProfiles[i], remainingProfiles[j], remainingProfiles[k]];
+                            const score = calculateGroupScore(tempGroup);
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestGroup = tempGroup;
+                            }
+                        }
+                    }
+                }
+
+                if (bestGroup.length === 3) {
+                    console.log('Best group found with score:', bestScore, bestGroup);
+                    groups.push(bestGroup);
+                    bestGroup.forEach(p => usedIds.add(p.id));
+                    remainingProfiles.splice(0, remainingProfiles.length, ...remainingProfiles.filter(p => !usedIds.has(p.id)));
+                } else {
+                    console.log('No valid group found');
+                    break;
+                }
+            }
+
+            displayMatches(groups);
+        }
+
+        // Calculate group score
+        function calculateGroupScore(group) {
+            let score = 0;
+
+            // Industry diversity (key requirement)
+            const industries = group.map(p => p.industry);
+            const uniqueIndustries = new Set(industries);
+            if (uniqueIndustries.size === 3) {
+                score += 30; // Maximum score for three different industries
+            } else {
+                score -= 50; // Heavy penalty for any industry overlap
+            }
+
+            // Time zone proximity
+            const timeZones = group.map(p => parseInt(p.timeZone.replace('UTC', '')));
+            const maxDiff = Math.max(...timeZones) - Math.min(...timeZones);
+            score += (12 - maxDiff) * 20; // Closer time zones = higher score
+
+            // Job role diversity
+            const roles = group.map(p => p.jobRole.toLowerCase());
+            const uniqueRoles = new Set(roles);
+            score += uniqueRoles.size * 15; // More diverse roles = higher score
+
+            // Challenge complementarity
+            const allChallenges = group.flatMap(p => p.challenges.map(c => c.toLowerCase()));
+            for (let i = 0; i < group.length; i++) {
+                const othersChallenges = group.filter((_, j) => j !== i).flatMap(p => p.challenges.map(c => c.toLowerCase()));
+                const matches = group[i].challenges.filter(c => othersChallenges.some(oc => oc.includes(c) || c.includes(oc)));
+                score += matches.length * 10;
+            }
+
+            console.log('Group score calculated:', score, 'Industries:', industries);
+            return score;
+        }
+
+        // Display matches
+        function displayMatches(groups) {
+            console.log('Displaying matches, group count:', groups.length);
+            const container = document.getElementById('matchesContainer');
+            if (groups.length === 0) {
+                container.innerHTML = '<p>No matches generated. Ensure profiles have diverse industries.</p>';
+                return;
+            }
+
+            container.innerHTML = `<div class="matches-grid">${groups.map((group, index) => `
+                <div class="match-card">
+                    <h4>Group ${index + 1}</h4>
+                    ${group.map(p => `
+                        <div style="margin-bottom: 10px;">
+                            <p><strong>${p.name}</strong> (${p.email})</p>
+                            <p>Job Role: ${p.jobRole}</p>
+                            <p>Industry: ${p.industry}</p>
+                            <p>Time Zone: ${p.timeZone}</p>
+                            <p>Challenges: ${p.challenges.join(', ')}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('')}</div>`;
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            console.log(`Showing ${type} message:`, message);
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${type}-message`;
+            messageDiv.textContent = message;
+            const container = document.querySelector('.container');
+            container.insertBefore(messageDiv, container.firstChild);
+            setTimeout(() => messageDiv.remove(), 3000);
+        }
+
+        // Debug functions
+        window.debugProfiles = () => console.log('Profiles:', profiles);
+        window.clearStorage = () => {
+            console.log('Clearing localStorage...');
+            localStorage.clear();
+            location.reload();
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            loadData();
+            isAuthenticated = sessionStorage.getItem('admin_authenticated') === 'true';
+            const passwordPrompt = document.getElementById('password-prompt');
+            const adminInterface = document.getElementById('admin-interface');
+            const loginButton = document.getElementById('loginButton');
+
+            if (isAuthenticated) {
+                console.log('User is authenticated, showing admin interface');
+                passwordPrompt.classList.add('hidden');
+                adminInterface.classList.remove('hidden');
+                showSection('add-profile');
+            } else {
+                console.log('User not authenticated, showing password prompt');
+                passwordPrompt.classList.remove('hidden');
+                adminInterface.classList.add('hidden');
+            }
+
+            // Bind login button event
+            if (loginButton) {
+                loginButton.addEventListener('click', checkPassword);
+                console.log('Login button event listener added');
+            } else {
+                console.error('Login button not found');
+                showMessage('Error: Login button not found.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>
