@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Peer Coaching Matcher</title>
+    <title>Peer Coaching Matcher</title>
     <style>
         * {
             margin: 0;
@@ -21,229 +21,231 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
-        .header {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            padding: 30px;
+        h1 {
             text-align: center;
-        }
-
-        .header h1 {
+            color: #333;
+            margin-bottom: 30px;
             font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 300;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .main-content {
-            padding: 40px;
-        }
-
-        .section {
-            margin-bottom: 40px;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            border-left: 5px solid #4CAF50;
-        }
-
-        .section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #4CAF50;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-block;
-            text-decoration: none;
-            margin: 10px 5px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-        }
-
-        .member-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .member-card {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .member-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        .member-card h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.3em;
-        }
-
-        .member-details {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.6;
-        }
-
-        .matching-groups {
-            margin-top: 30px;
-        }
-
-        .group-card {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        .profile-section {
+            background: linear-gradient(135deg, #f8f9ff, #e8ecff);
             border-radius: 15px;
             padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e1e8ff;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
-            border-left: 5px solid #2196F3;
         }
 
-        .group-card h3 {
-            color: #1976D2;
-            margin-bottom: 15px;
-            font-size: 1.5em;
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            margin-right: 20px;
         }
 
-        .group-members {
+        .profile-info h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .profile-details {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
-        }
-
-        .group-member {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        .match-reason {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            font-style: italic;
-            color: #856404;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
             margin-top: 20px;
         }
 
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .detail-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
         }
 
-        .stat-number {
-            font-size: 2.5em;
+        .detail-label {
             font-weight: bold;
-            color: #4CAF50;
+            color: #333;
+            margin-bottom: 5px;
         }
 
-        .stat-label {
+        .detail-value {
+            color: #555;
+        }
+
+        .matches-section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .match-count {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-left: 15px;
+            font-size: 0.8em;
+        }
+
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .match-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .match-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .match-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .match-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .match-role {
             color: #666;
             font-size: 0.9em;
+        }
+
+        .compatibility-score {
+            background: linear-gradient(135deg, #48CAE4, #0077B6);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .match-details {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .match-item {
+            font-size: 0.9em;
+        }
+
+        .match-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .match-value {
+            color: #777;
+            margin-left: 5px;
+        }
+
+        .common-interests {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .interests-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
             margin-top: 5px;
         }
 
-        .export-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
+        .interest-tag {
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
         }
 
-        .loading {
+        .no-matches {
             text-align: center;
             padding: 40px;
             color: #666;
+            font-size: 1.1em;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
         }
 
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4CAF50;
-            border-radius: 50%;
             width: 40px;
             height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
         }
 
         @keyframes spin {
@@ -251,590 +253,411 @@
             100% { transform: rotate(360deg); }
         }
 
-        .hidden {
-            display: none;
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .notification.success {
-            background: #4CAF50;
-        }
-
-        .notification.warning {
-            background: #ff9800;
-        }
-
-        .notification.error {
-            background: #f44336;
+        .error-message {
+            background: rgba(255, 107, 107, 0.1);
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #e74c3c;
         }
 
         @media (max-width: 768px) {
-            .form-row {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .profile-details {
                 grid-template-columns: 1fr;
             }
             
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .main-content {
-                padding: 20px;
+            .matches-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🤝 AI Peer Coaching Matcher</h1>
-            <p>Intelligently match professionals for optimal peer coaching sessions</p>
+        <h1>🤝 Peer Coaching Matcher</h1>
+        
+        <div class="profile-section">
+            <div class="profile-header">
+                <div class="profile-avatar" id="userAvatar">JW</div>
+                <div class="profile-info">
+                    <h2 id="userName">Loading...</h2>
+                    <p id="userTitle">Loading profile...</p>
+                </div>
+            </div>
+            
+            <div class="profile-details" id="profileDetails">
+                <!-- Profile details will be populated here -->
+            </div>
         </div>
 
-        <div class="main-content">
-            <!-- Member Registration Section -->
-            <div class="section">
-                <h2>👤 Add New Member</h2>
-                <form id="memberForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name">Full Name *</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email *</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="country">Country *</label>
-                            <select id="country" name="country" required>
-                                <option value="">Select Country</option>
-                                <option value="USA">United States</option>
-                                <option value="UK">United Kingdom</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Australia">Australia</option>
-                                <option value="Germany">Germany</option>
-                                <option value="France">France</option>
-                                <option value="Netherlands">Netherlands</option>
-                                <option value="Singapore">Singapore</option>
-                                <option value="Japan">Japan</option>
-                                <option value="Brazil">Brazil</option>
-                                <option value="India">India</option>
-                                <option value="South Africa">South Africa</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="industry">Industry *</label>
-                            <select id="industry" name="industry" required>
-                                <option value="">Select Industry</option>
-                                <option value="Technology">Technology</option>
-                                <option value="Finance">Finance</option>
-                                <option value="Healthcare">Healthcare</option>
-                                <option value="Education">Education</option>
-                                <option value="Manufacturing">Manufacturing</option>
-                                <option value="Retail">Retail</option>
-                                <option value="Consulting">Consulting</option>
-                                <option value="Marketing">Marketing</option>
-                                <option value="Legal">Legal</option>
-                                <option value="Real Estate">Real Estate</option>
-                                <option value="Non-Profit">Non-Profit</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="role">Role/Position *</label>
-                            <select id="role" name="role" required>
-                                <option value="">Select Role</option>
-                                <option value="CEO/Founder">CEO/Founder</option>
-                                <option value="C-Suite">C-Suite Executive</option>
-                                <option value="VP/Director">VP/Director</option>
-                                <option value="Senior Manager">Senior Manager</option>
-                                <option value="Manager">Manager</option>
-                                <option value="Team Lead">Team Lead</option>
-                                <option value="Senior Professional">Senior Professional</option>
-                                <option value="Professional">Professional</option>
-                                <option value="Consultant">Consultant</option>
-                                <option value="Entrepreneur">Entrepreneur</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="experience">Years of Experience *</label>
-                            <select id="experience" name="experience" required>
-                                <option value="">Select Experience</option>
-                                <option value="0-2">0-2 years</option>
-                                <option value="3-5">3-5 years</option>
-                                <option value="6-10">6-10 years</option>
-                                <option value="11-15">11-15 years</option>
-                                <option value="16-20">16-20 years</option>
-                                <option value="20+">20+ years</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="expertise">Areas of Expertise (separate with commas)</label>
-                        <input type="text" id="expertise" name="expertise" placeholder="e.g., Leadership, Strategy, Marketing, Operations">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="challenges">Primary Challenge Areas (separate with commas)</label>
-                        <input type="text" id="challenges" name="challenges" placeholder="e.g., Team Management, Scaling, Work-Life Balance">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="goals">Professional Goals</label>
-                        <textarea id="goals" name="goals" rows="3" placeholder="What are you looking to achieve?"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn">Add Member</button>
-                </form>
+        <div class="matches-section">
+            <div class="section-title">
+                Potential Coaching Partners
+                <span class="match-count" id="matchCount">0 matches</span>
             </div>
-
-            <!-- Current Members Section -->
-            <div class="section">
-                <h2>📋 Current Members</h2>
-                <div class="stats">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalMembers">0</div>
-                        <div class="stat-label">Total Members</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalCountries">0</div>
-                        <div class="stat-label">Countries</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalIndustries">0</div>
-                        <div class="stat-label">Industries</div>
-                    </div>
-                </div>
-                <div class="member-list" id="memberList"></div>
-            </div>
-
-            <!-- Matching Section -->
-            <div class="section">
-                <h2>🎯 Generate Coaching Groups</h2>
-                <p style="margin-bottom: 20px;">Our AI algorithm creates optimal groups of 3 based on complementary backgrounds, diverse perspectives, and balanced expertise levels.</p>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="matchingStrategy">Matching Strategy</label>
-                        <select id="matchingStrategy">
-                            <option value="balanced">Balanced Diversity (Recommended)</option>
-                            <option value="experience">Experience-Based</option>
-                            <option value="industry">Industry Cross-Pollination</option>
-                            <option value="geographic">Geographic Diversity</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="minGroupSize">Minimum Group Size</label>
-                        <select id="minGroupSize">
-                            <option value="3">3 (Standard)</option>
-                            <option value="2">2 (Pairs)</option>
-                            <option value="4">4 (Extended)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <button onclick="generateMatches()" class="btn">🚀 Generate Matches</button>
-                <button onclick="clearAll()" class="btn btn-secondary">Clear All Data</button>
-            </div>
-
-            <!-- Results Section -->
-            <div class="section hidden" id="resultsSection">
-                <h2>✨ Matched Coaching Groups</h2>
-                <div class="matching-groups" id="matchingResults"></div>
-                
-                <div class="export-section">
-                    <h3>📤 Export Options</h3>
-                    <button onclick="exportToCSV()" class="btn">Export to CSV</button>
-                    <button onclick="exportToJSON()" class="btn btn-secondary">Export to JSON</button>
-                    <button onclick="generateEmailTemplate()" class="btn">Generate Email Templates</button>
+            
+            <div id="matchesContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Global variables
-        let members = [];
-        let matchedGroups = [];
-
-        // Load data from memory on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadSampleData();
-            updateMemberList();
-            updateStats();
-        });
-
-        // Member form submission
-        document.getElementById('memberForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
-            const member = {
-                id: Date.now(),
-                name: formData.get('name'),
-                email: formData.get('email'),
-                country: formData.get('country'),
-                industry: formData.get('industry'),
-                role: formData.get('role'),
-                experience: formData.get('experience'),
-                expertise: formData.get('expertise').split(',').map(s => s.trim()).filter(s => s),
-                challenges: formData.get('challenges').split(',').map(s => s.trim()).filter(s => s),
-                goals: formData.get('goals'),
-                dateAdded: new Date().toISOString()
-            };
-            
-            members.push(member);
-            updateMemberList();
-            updateStats();
-            e.target.reset();
-            
-            // Show success message
-            showNotification('Member added successfully!', 'success');
-        });
-
-        function loadSampleData() {
-            if (members.length === 0) {
-                members = [
-                    {
-                        id: 1,
-                        name: "Sarah Chen",
-                        email: "sarah.chen@email.com",
-                        country: "Singapore",
-                        industry: "Technology",
-                        role: "VP/Director",
-                        experience: "11-15",
-                        expertise: ["Product Management", "Team Leadership", "Strategy"],
-                        challenges: ["Scaling Operations", "Remote Team Management"],
-                        goals: "Lead digital transformation initiatives",
-                        dateAdded: new Date().toISOString()
-                    },
-                    {
-                        id: 2,
-                        name: "Marcus Johnson",
-                        email: "marcus.j@email.com",
-                        country: "USA",
-                        industry: "Finance",
-                        role: "Senior Manager",
-                        experience: "6-10",
-                        expertise: ["Risk Management", "Analytics", "Compliance"],
-                        challenges: ["Work-Life Balance", "Career Advancement"],
-                        goals: "Transition to fintech leadership role",
-                        dateAdded: new Date().toISOString()
-                    },
-                    {
-                        id: 3,
-                        name: "Elena Rodriguez",
-                        email: "elena.r@email.com",
-                        country: "Spain",
-                        industry: "Marketing",
-                        role: "CEO/Founder",
-                        experience: "16-20",
-                        expertise: ["Brand Strategy", "Digital Marketing", "Entrepreneurship"],
-                        challenges: ["Fundraising", "International Expansion"],
-                        goals: "Scale startup to global markets",
-                        dateAdded: new Date().toISOString()
-                    },
-                    {
-                        id: 4,
-                        name: "David Kim",
-                        email: "david.kim@email.com",
-                        country: "South Korea",
-                        industry: "Healthcare",
-                        role: "Manager",
-                        experience: "3-5",
-                        expertise: ["Project Management", "Healthcare IT", "Process Improvement"],
-                        challenges: ["Team Leadership", "Stakeholder Management"],
-                        goals: "Advance to senior management position",
-                        dateAdded: new Date().toISOString()
-                    },
-                    {
-                        id: 5,
-                        name: "Amara Okafor",
-                        email: "amara.o@email.com",
-                        country: "Nigeria",
-                        industry: "Education",
-                        role: "Senior Professional",
-                        experience: "6-10",
-                        expertise: ["Curriculum Development", "Online Learning", "Training"],
-                        challenges: ["Technology Integration", "Change Management"],
-                        goals: "Lead educational technology initiatives",
-                        dateAdded: new Date().toISOString()
-                    },
-                    {
-                        id: 6,
-                        name: "James Thompson",
-                        email: "james.t@email.com",
-                        country: "Canada",
-                        industry: "Manufacturing",
-                        role: "C-Suite",
-                        experience: "20+",
-                        expertise: ["Operations Excellence", "Supply Chain", "Lean Management"],
-                        challenges: ["Digital Transformation", "Sustainability"],
-                        goals: "Modernize traditional manufacturing processes",
-                        dateAdded: new Date().toISOString()
-                    }
-                ];
+        // Sample profile database - in a real app, this would come from a backend
+        const profileDatabase = [
+            {
+                name: "Sarah Chen",
+                email: "sarah.chen@example.com",
+                country: "France",
+                industry: "Technology",
+                role: "Product Manager",
+                experience: "11-15",
+                expertise: ["Leadership", "Product Strategy", "Team Management", "Data Analytics"],
+                challenges: ["Cross-functional collaboration", "Stakeholder management", "Product roadmapping"],
+                goals: ["Career advancement", "Leadership development"]
+            },
+            {
+                name: "Marc Dubois",
+                email: "marc.dubois@example.com",
+                country: "France",
+                industry: "Education",
+                role: "Training Manager",
+                experience: "16-20",
+                expertise: ["Leadership", "HR", "Training Development", "Change Management"],
+                challenges: ["Team motivation", "Training effectiveness", "Digital transformation"],
+                goals: ["Organizational impact", "Professional growth"]
+            },
+            {
+                name: "Elena Rodriguez",
+                email: "elena.rodriguez@example.com",
+                country: "Spain",
+                industry: "Consulting",
+                role: "Senior Consultant",
+                experience: "11-15",
+                expertise: ["Strategy", "Leadership", "Client Relations", "Business Development"],
+                challenges: ["Client acquisition", "Team leadership", "Work-life balance"],
+                goals: ["Business development", "Leadership excellence"]
+            },
+            {
+                name: "James Wilson",
+                email: "james.wilson@example.com",
+                country: "UK",
+                industry: "Automotive",
+                role: "Operations Manager",
+                experience: "16-20",
+                expertise: ["Operations", "Leadership", "Process Improvement", "Automotive"],
+                challenges: ["Supply chain optimization", "Team performance", "Cost management"],
+                goals: ["Operational excellence", "Strategic thinking"]
+            },
+            {
+                name: "Anna Kowalski",
+                email: "anna.kowalski@example.com",
+                country: "Germany",
+                industry: "Technology",
+                role: "IT Director",
+                experience: "16-20",
+                expertise: ["IT", "Tech", "Leadership", "Digital Transformation"],
+                challenges: ["Technology adoption", "Team scaling", "Innovation management"],
+                goals: ["Technical leadership", "Innovation"]
             }
+        ];
+
+        let currentUser = null;
+
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase();
         }
 
-        function updateMemberList() {
-            const memberList = document.getElementById('memberList');
-            memberList.innerHTML = '';
+        function parseURLParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
             
-            members.forEach(member => {
-                const memberCard = document.createElement('div');
-                memberCard.className = 'member-card';
-                memberCard.innerHTML = `
-                    <h3>${member.name}</h3>
-                    <div class="member-details">
-                        <p><strong>Country:</strong> ${member.country}</p>
-                        <p><strong>Industry:</strong> ${member.industry}</p>
-                        <p><strong>Role:</strong> ${member.role}</p>
-                        <p><strong>Experience:</strong> ${member.experience} years</p>
-                        <p><strong>Expertise:</strong> ${member.expertise.join(', ')}</p>
-                        <p><strong>Challenges:</strong> ${member.challenges.join(', ')}</p>
-                        <button onclick="removeMember(${member.id})" class="btn btn-danger" style="margin-top: 10px; padding: 8px 16px; font-size: 14px;">Remove</button>
+            // Debug: log all parameters
+            console.log('URL search string:', window.location.search);
+            console.log('All URL parameters:');
+            for (let [key, value] of urlParams.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+            
+            const name = urlParams.get('name');
+            const email = urlParams.get('email');
+            const country = urlParams.get('country');
+            const industry = urlParams.get('industry');
+            const role = urlParams.get('role');
+            const experience = urlParams.get('experience');
+            const expertise = urlParams.get('expertise');
+            const challenges = urlParams.get('challenges');
+            const goals = urlParams.get('goals');
+            
+            console.log('Individual parameters:', {name, email, country, industry, role, experience, expertise, challenges, goals});
+            
+            // If no URL parameters found, use demo data for testing
+            if (!name && !email && !country && window.location.search === '') {
+                console.log('No URL parameters found, using demo data');
+                currentUser = {
+                    name: "Jeremy Williams",
+                    email: "jeremyprof.williams@gmail.com",
+                    country: "France",
+                    industry: "Education",
+                    role: "Consultant",
+                    experience: "16-20",
+                    expertise: ["Leadership", "Sales", "IT", "Tech", "HR", "Automotive"],
+                    challenges: ["Team motivation", "Persuasion", "Sales and marketing"],
+                    goals: ["Success"]
+                };
+            } else {
+                currentUser = {
+                    name: name && name.trim() !== '' ? name : null,
+                    email: email && email.trim() !== '' ? email : null,
+                    country: country && country.trim() !== '' ? country : null,
+                    industry: industry && industry.trim() !== '' ? industry : null,
+                    role: role && role.trim() !== '' ? role : null,
+                    experience: experience && experience.trim() !== '' ? experience : null,
+                    expertise: expertise ? expertise.split(',').map(s => s.trim()).filter(s => s !== '') : [],
+                    challenges: challenges ? challenges.split(',').map(s => s.trim()).filter(s => s !== '') : [],
+                    goals: goals ? goals.split(',').map(s => s.trim()).filter(s => s !== '') : []
+                };
+            }
+
+            console.log('Parsed user profile:', currentUser);
+            console.log('User name check:', currentUser.name, typeof currentUser.name);
+            return currentUser;
+        }
+
+        function displayUserProfile(user) {
+            // Update header
+            document.getElementById('userAvatar').textContent = getInitials(user.name);
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userTitle').textContent = `${user.role} in ${user.industry}`;
+
+            // Update profile details
+            const profileDetails = document.getElementById('profileDetails');
+            profileDetails.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">Location</div>
+                    <div class="detail-value">${user.country}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Industry</div>
+                    <div class="detail-value">${user.industry}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Role</div>
+                    <div class="detail-value">${user.role}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Experience</div>
+                    <div class="detail-value">${user.experience} years</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Expertise</div>
+                    <div class="detail-value">${user.expertise.join(', ')}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Challenges</div>
+                    <div class="detail-value">${user.challenges.join(', ')}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Goals</div>
+                    <div class="detail-value">${user.goals.join(', ')}</div>
+                </div>
+            `;
+        }
+
+        function calculateCompatibility(user1, user2) {
+            let score = 0;
+            let factors = [];
+
+            // Industry match (high weight)
+            if (user1.industry.toLowerCase() === user2.industry.toLowerCase()) {
+                score += 25;
+                factors.push('Same industry');
+            }
+
+            // Experience level match
+            if (user1.experience === user2.experience) {
+                score += 15;
+                factors.push('Similar experience');
+            }
+
+            // Expertise overlap
+            const user1Expertise = user1.expertise.map(e => e.toLowerCase());
+            const user2Expertise = user2.expertise.map(e => e.toLowerCase());
+            const expertiseOverlap = user1Expertise.filter(e => 
+                user2Expertise.some(e2 => e2.includes(e) || e.includes(e2))
+            );
+            score += expertiseOverlap.length * 10;
+            if (expertiseOverlap.length > 0) {
+                factors.push(`${expertiseOverlap.length} expertise areas`);
+            }
+
+            // Challenge/goal complementarity
+            const user1Challenges = user1.challenges.map(c => c.toLowerCase());
+            const user2Challenges = user2.challenges.map(c => c.toLowerCase());
+            const challengeOverlap = user1Challenges.filter(c => 
+                user2Challenges.some(c2 => c2.includes(c) || c.includes(c2))
+            );
+            score += challengeOverlap.length * 8;
+
+            // Geographic proximity (same country)
+            if (user1.country.toLowerCase() === user2.country.toLowerCase()) {
+                score += 15;
+                factors.push('Same country');
+            }
+
+            return { score: Math.min(score, 100), factors };
+        }
+
+        function findMatches(user, database) {
+            const matches = database.map(candidate => {
+                const compatibility = calculateCompatibility(user, candidate);
+                return {
+                    ...candidate,
+                    compatibilityScore: compatibility.score,
+                    compatibilityFactors: compatibility.factors
+                };
+            });
+
+            // Sort by compatibility score (descending) and filter out very low scores
+            return matches
+                .filter(match => match.compatibilityScore >= 20)
+                .sort((a, b) => b.compatibilityScore - a.compatibilityScore);
+        }
+
+        function displayMatches(matches) {
+            const container = document.getElementById('matchesContainer');
+            const matchCount = document.getElementById('matchCount');
+            
+            matchCount.textContent = `${matches.length} ${matches.length === 1 ? 'match' : 'matches'}`;
+
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div class="no-matches">
+                        <h3>No matches found</h3>
+                        <p>We couldn't find any coaching partners matching your profile at this time. Try updating your profile or check back later!</p>
                     </div>
                 `;
-                memberList.appendChild(memberCard);
-            });
-        }
-
-        function updateStats() {
-            document.getElementById('totalMembers').textContent = members.length;
-            
-            const countries = new Set(members.map(m => m.country));
-            document.getElementById('totalCountries').textContent = countries.size;
-            
-            const industries = new Set(members.map(m => m.industry));
-            document.getElementById('totalIndustries').textContent = industries.size;
-        }
-
-        function removeMember(id) {
-            members = members.filter(m => m.id !== id);
-            updateMemberList();
-            updateStats();
-            showNotification('Member removed successfully!', 'success');
-        }
-
-        function generateMatches() {
-            if (members.length < 3) {
-                showNotification('Need at least 3 members to generate matches!', 'warning');
                 return;
             }
 
-            const strategy = document.getElementById('matchingStrategy').value;
-            const minGroupSize = parseInt(document.getElementById('minGroupSize').value);
-            
-            // Show loading
-            const resultsSection = document.getElementById('resultsSection');
-            resultsSection.classList.remove('hidden');
-            document.getElementById('matchingResults').innerHTML = '<div class="loading"><div class="spinner"></div>Generating optimal matches...</div>';
+            const matchesHTML = matches.map(match => {
+                const commonExpertise = currentUser.expertise.filter(e => 
+                    match.expertise.some(me => me.toLowerCase().includes(e.toLowerCase()) || e.toLowerCase().includes(me.toLowerCase()))
+                );
 
-            // Simulate AI processing time
-            setTimeout(() => {
-                matchedGroups = createOptimalGroups(members, strategy, minGroupSize);
-                displayMatches();
-            }, 2000);
+                return `
+                    <div class="match-card">
+                        <div class="match-header">
+                            <div class="match-avatar">${getInitials(match.name)}</div>
+                            <div>
+                                <div class="match-name">${match.name}</div>
+                                <div class="match-role">${match.role} • ${match.industry}</div>
+                            </div>
+                            <div class="compatibility-score">${match.compatibilityScore}% match</div>
+                        </div>
+                        
+                        <div class="match-details">
+                            <div class="match-item">
+                                <span class="match-label">Location:</span>
+                                <span class="match-value">${match.country}</span>
+                            </div>
+                            <div class="match-item">
+                                <span class="match-label">Experience:</span>
+                                <span class="match-value">${match.experience} years</span>
+                            </div>
+                            <div class="match-item">
+                                <span class="match-label">Expertise:</span>
+                                <span class="match-value">${match.expertise.join(', ')}</span>
+                            </div>
+                        </div>
+
+                        ${commonExpertise.length > 0 ? `
+                            <div class="common-interests">
+                                <div class="match-label">Common Expertise:</div>
+                                <div class="interests-tags">
+                                    ${commonExpertise.map(interest => `<span class="interest-tag">${interest}</span>`).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${match.compatibilityFactors.length > 0 ? `
+                            <div style="margin-top: 10px; font-size: 0.8em; color: #666;">
+                                Match factors: ${match.compatibilityFactors.join(', ')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `<div class="matches-grid">${matchesHTML}</div>`;
         }
 
-        function createOptimalGroups(memberList, strategy, groupSize) {
-            const groups = [];
-            const availableMembers = [...memberList];
-            
-            // Shuffle for randomization
-            for (let i = availableMembers.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [availableMembers[i], availableMembers[j]] = [availableMembers[j], availableMembers[i]];
-            }
-            
-            while (availableMembers.length >= groupSize) {
-                const group = [];
-                const firstMember = availableMembers.shift();
-                group.push(firstMember);
+        function initializeApp() {
+            try {
+                console.log('Initializing app...');
+                console.log('Current URL:', window.location.href);
                 
-                // Find complementary members based on strategy
-                for (let i = 1; i < groupSize; i++) {
-                    const bestMatch = findBestMatch(firstMember, group, availableMembers, strategy);
-                    if (bestMatch) {
-                        group.push(bestMatch);
-                        availableMembers.splice(availableMembers.indexOf(bestMatch), 1);
-                    } else if (availableMembers.length > 0) {
-                        // Fallback to any available member
-                        group.push(availableMembers.shift());
+                // Parse URL parameters
+                const user = parseURLParameters();
+                
+                if (!user.name || user.name === null) {
+                    console.log('No valid user name found');
+                    
+                    // Show error only if we're not using demo data
+                    if (window.location.search !== '') {
+                        document.getElementById('matchesContainer').innerHTML = `
+                            <div class="error-message">
+                                <strong>Error:</strong> No user profile found in URL parameters. 
+                                Please ensure all required parameters are provided.
+                                <br><br>Current URL: ${window.location.href}
+                                <br>Parameters found: ${Object.keys(user).filter(key => user[key] !== null && user[key] !== '').join(', ')}
+                            </div>
+                        `;
+                        
+                        // Still show a basic profile even with error
+                        document.getElementById('userAvatar').textContent = 'U';
+                        document.getElementById('userName').textContent = 'Unknown User';
+                        document.getElementById('userTitle').textContent = 'Profile not loaded';
+                        return;
                     }
                 }
-                
-                if (group.length >= groupSize) {
-                    groups.push({
-                        id: groups.length + 1,
-                        members: group,
-                        matchReason: generateMatchReason(group, strategy),
-                        diversity: calculateDiversity(group)
-                    });
-                }
+
+                // Display user profile
+                displayUserProfile(user);
+
+                // Find and display matches
+                setTimeout(() => {
+                    const matches = findMatches(user, profileDatabase);
+                    console.log('Found matches:', matches);
+                    displayMatches(matches);
+                }, 1000); // Simulate loading time
+
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                document.getElementById('matchesContainer').innerHTML = `
+                    <div class="error-message">
+                        <strong>Error:</strong> Failed to load profile matcher. Please check your parameters and try again.
+                        <br><br>Error details: ${error.message}
+                        <br>URL: ${window.location.href}
+                    </div>
+                `;
             }
-            
-            return groups;
         }
 
-        function findBestMatch(anchor, currentGroup, candidates, strategy) {
-            let bestCandidate = null;
-            let bestScore = -1;
-            
-            candidates.forEach(candidate => {
-                let score = 0;
-                
-                switch (strategy) {
-                    case 'balanced':
-                        score = calculateBalancedScore(anchor, candidate, currentGroup);
-                        break;
-                    case 'experience':
-                        score = calculateExperienceScore(anchor, candidate, currentGroup);
-                        break;
-                    case 'industry':
-                        score = calculateIndustryScore(anchor, candidate, currentGroup);
-                        break;
-                    case 'geographic':
-                        score = calculateGeographicScore(anchor, candidate, currentGroup);
-                        break;
-                }
-                
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestCandidate = candidate;
-                }
-            });
-            
-            return bestCandidate;
-        }
-
-        function calculateBalancedScore(anchor, candidate, group) {
-            let score = 0;
-            
-            // Different industries bonus
-            if (anchor.industry !== candidate.industry) score += 3;
-            
-            // Different countries bonus
-            if (anchor.country !== candidate.country) score += 2;
-            
-            // Complementary experience levels
-            const expLevels = ['0-2', '3-5', '6-10', '11-15', '16-20', '20+'];
-            const anchorExp = expLevels.indexOf(anchor.experience);
-            const candidateExp = expLevels.indexOf(candidate.experience);
-            const expDiff = Math.abs(anchorExp - candidateExp);
-            if (expDiff >= 2) score += 2;
-            
-            // Diverse expertise
-            const commonExpertise = anchor.expertise.filter(e => candidate.expertise.includes(e));
-            if (commonExpertise.length === 0) score += 1;
-            
-            // Avoid same role in group
-            const sameRole = group.some(m => m.role === candidate.role);
-            if (!sameRole) score += 1;
-            
-            return score;
-        }
-
-        function calculateExperienceScore(anchor, candidate, group) {
-            const expLevels = ['0-2', '3-5', '6-10', '11-15', '16-20', '20+'];
-            const anchorExp = expLevels.indexOf(anchor.experience);
-            const candidateExp = expLevels.indexOf(candidate.experience);
-            return Math.abs(anchorExp - candidateExp);
-        }
-
-        function calculateIndustryScore(anchor, candidate, group) {
-            return anchor.industry !== candidate.industry ? 3 : 0;
-        }
-
-        function calculateGeographicScore(anchor, candidate, group) {
-            return anchor.country !== candidate.country ? 3 : 0;
-        }
-
-        function calculateDiversity(group) {
-            const countries = new Set(group.map(m => m.country));
-            const industries = new Set(group.map(m => m.industry));
-            const roles = new Set(group.map(m => m.role));
-            
-            return {
-                geographic: countries.size,
-                industrial: industries.size,
-                hierarchical: roles.size
-            };
-        }
-
-        function generateMatchReason(group, strategy) {
-            const reasons = [];
-            
-            const countries = new Set(group.map(m => m.country));
-            const industries = new Set(group.map(m => m.industry));
-            const experiences = group.map(m => m.experience);
-            
-            if (countries.size === group.length) {
-                reasons.push("Perfect geographic diversity");
-            } else if (countries.size > 1) {
-                reasons.push("Good geographic spread");
-            }
-            
-            if (industries.size === group.length) {
-                reasons.push("Complete industry diversity");
-            } else if (industries.size > 1) {
-                reasons.push("Cross-industry perspectives");
-            }
-            
-            const expLevels = ['0-2', '3-5', '6-10', '11-15', '16-20', '20+'];
-            const expIndices = experiences.map(e => expLevels.indexOf(e));
-            const expRange = Math.max(...expIndices) - Math.min(...expIndices);
-            
-            if (expRange >= 3) {
-                reasons.push("Balanced experience levels");
-            }
-            
-            // Check for complementary expertise
-            const allExpertise = group.flatMap(m => m.expertise);
-            const uniqueExpertise = new Set(allExpertise);
-            if (uniqueExpertise.size >= group.length * 2) {
-                reasons.push("Complementary skill sets");
-            }
-            
-            return reasons.length > 0 ? reasons.join(" • ") : "Algorithmically optimized match";
-        }
-
-        function displayMatches() {
-            const resultsContainer = document.getElementById('matchingResults');
-            resultsContainer.innerHTML = '';
-            
-            if (matchedGroups.length === 0) {
-                resultsContainer.innerHTML = '<p>No matches could be generated with current criteria.</p>';
-                return;
-            }
-            
-            matchedGroups.forEach(group => {
-                const groupCard = document.createElement('div');
-                groupCard.className = 'group-card';
-                groupCard.innerHTML = `
-                    <h3>🎯 Group ${group.id}</h3>
-                    <div class="group-members">
-                        ${group.members.map(member => `
-                            <div class="group-member">
-                                <h4>${member.name}</h4>
-                                <p>
+        // Initialize the app when page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
