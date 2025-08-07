@@ -727,7 +727,16 @@
             });
         }
 
+        // FIXED: Enhanced updateTagsDisplay function with proper array handling
         function updateTagsDisplay(container, tagsArray) {
+            console.log('Updating display for:', container.id, 'with tags:', tagsArray);
+            
+            // Ensure tagsArray is actually an array
+            if (!Array.isArray(tagsArray)) {
+                console.warn('Warning: tagsArray is not an array:', tagsArray);
+                tagsArray = [];
+            }
+            
             container.innerHTML = tagsArray.map((tag, index) => `
                 <span class="tag">
                     ${tag}
@@ -777,11 +786,11 @@
             console.log('✅ Form cleared and reset to add mode');
         }
 
-        // FIXED Edit Profile Function
+        // FIXED Edit Profile Function with proper array handling
         function editProfile(id) {
             console.log('🔧 Starting edit for ID:', id, typeof id);
             
-            const profile = profiles.find(p => p.id == id); // Using == instead of ===
+            const profile = profiles.find(p => p.id == id);
             if (!profile) {
                 console.error('❌ Profile not found for ID:', id);
                 showMessage('Profile not found for editing.', 'error');
@@ -789,6 +798,7 @@
             }
             
             console.log('✅ Profile found:', profile.name);
+            console.log('Profile arrays:', profile.expertise, profile.challenges, profile.goals);
             
             // Clear form first
             clearForm();
@@ -807,22 +817,24 @@
                     document.getElementById('role').value = profile.role || '';
                     document.getElementById('experience').value = profile.experience || '';
                     
-                    // Set tag arrays
-                    expertise = profile.expertise ? [...profile.expertise] : [];
-                    challenges = profile.challenges ? [...profile.challenges] : [];
-                    goals = profile.goals ? [...profile.goals] : [];
+                    // CRITICAL FIX: Properly set global arrays with profile data
+                    expertise = Array.isArray(profile.expertise) ? [...profile.expertise] : [];
+                    challenges = Array.isArray(profile.challenges) ? [...profile.challenges] : [];
+                    goals = Array.isArray(profile.goals) ? [...profile.goals] : [];
                     
-                    // Update tag displays
+                    console.log('✅ Arrays set:', { expertise, challenges, goals });
+                    
+                    // CRITICAL FIX: Force update tag displays immediately
                     updateTagsDisplay(document.getElementById('expertiseTags'), expertise);
                     updateTagsDisplay(document.getElementById('challengesTags'), challenges);
                     updateTagsDisplay(document.getElementById('goalsTags'), goals);
                     
-                    // Set edit mode - CRITICAL FIX
+                    // Set edit mode
                     const form = document.getElementById('profileForm');
                     const submitButton = form.querySelector('button[type="submit"]');
                     submitButton.textContent = 'Update Profile';
                     
-                    // Create hidden ID field - KEY FIX
+                    // Create hidden ID field
                     let hiddenId = document.getElementById('editingId');
                     if (hiddenId) hiddenId.remove();
                     
@@ -830,7 +842,7 @@
                     hiddenId.type = 'hidden';
                     hiddenId.id = 'editingId';
                     hiddenId.name = 'editingId';
-                    hiddenId.value = id.toString(); // Ensure it's a string
+                    hiddenId.value = id.toString();
                     form.appendChild(hiddenId);
                     
                     // Show cancel button
@@ -1138,6 +1150,18 @@
         // Make debug function accessible from browser console
         window.debugProfiles = debugProfileData;
 
+        // ADDED: Debug function to test tag array management
+        window.debugTagArrays = function() {
+            console.log('=== TAG ARRAYS DEBUG ===');
+            console.log('Expertise array:', expertise);
+            console.log('Challenges array:', challenges);
+            console.log('Goals array:', goals);
+            console.log('Expertise display:', document.getElementById('expertiseTags').innerHTML);
+            console.log('Challenges display:', document.getElementById('challengesTags').innerHTML);
+            console.log('Goals display:', document.getElementById('goalsTags').innerHTML);
+            console.log('=== END DEBUG ===');
+        }
+
         // Debug function to test form submission state
         window.debugFormSubmit = function() {
             const hiddenId = document.getElementById('editingId');
@@ -1173,7 +1197,7 @@
             setupTagInput('challengesInput', 'challengesTags', challenges);
             setupTagInput('goalsInput', 'goalsTags', goals);
             
-            // FIXED Form submission handler
+            // FIXED Form submission handler with proper array handling
             document.getElementById('profileForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -1192,6 +1216,7 @@
                 console.log('Editing ID found:', editingId);
                 console.log('Form data:', profileData);
                 console.log('Current profiles array length:', profiles.length);
+                console.log('Tag arrays:', { expertise, challenges, goals });
                 
                 // Validate required fields
                 if (!profileData.name || !profileData.email || !profileData.country || 
@@ -1226,7 +1251,7 @@
                             return;
                         }
                         
-                        // Update profile
+                        // CRITICAL FIX: Update profile with proper array handling
                         const originalId = profiles[profileIndex].id;
                         profiles[profileIndex] = {
                             id: originalId, // Keep original ID
@@ -1236,12 +1261,12 @@
                             industry: profileData.industry,
                             role: profileData.role,
                             experience: profileData.experience,
-                            expertise: [...expertise],
-                            challenges: [...challenges],
-                            goals: [...goals]
+                            expertise: Array.isArray(expertise) ? [...expertise] : [],      // ENSURE THESE ARE ARRAYS
+                            challenges: Array.isArray(challenges) ? [...challenges] : [],    // NOT STRINGS
+                            goals: Array.isArray(goals) ? [...goals] : []              // NOT STRINGS
                         };
                         
-                        console.log('Profile updated:', profiles[profileIndex]);
+                        console.log('Profile updated with arrays:', profiles[profileIndex]);
                         
                         // Force save
                         try {
