@@ -38,93 +38,286 @@
             background-clip: text;
         }
 
-        .profile-section {
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            background: #f8f9ff;
+            padding: 5px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Add Profile Form Styles */
+        .form-section {
             background: linear-gradient(135deg, #f8f9ff, #e8ecff);
             border-radius: 15px;
             padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
             border: 2px solid #e1e8ff;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .tag-input {
+            position: relative;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+
+        .tag-remove:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9ff;
+            color: #667eea;
+            border: 2px solid #e1e8ff;
+        }
+
+        .btn-secondary:hover {
+            background: #e1e8ff;
+        }
+
+        /* Profile List Styles */
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
         }
 
         .profile-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .profile-avatar {
-            width: 80px;
-            height: 80px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea, #764ba2);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2em;
             font-weight: bold;
-            margin-right: 20px;
+            margin-right: 15px;
         }
 
-        .profile-info h2 {
+        .profile-name {
+            font-size: 1.2em;
+            font-weight: bold;
             color: #333;
             margin-bottom: 5px;
         }
 
-        .profile-info p {
+        .profile-role {
             color: #666;
-            font-size: 1.1em;
+            font-size: 0.9em;
+        }
+
+        .profile-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8em;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
         }
 
         .profile-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: 1fr;
+            gap: 10px;
         }
 
         .detail-item {
-            background: rgba(255, 255, 255, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+            font-size: 0.9em;
         }
 
         .detail-label {
             font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .detail-value {
             color: #555;
         }
 
-        .matches-section {
-            margin-top: 30px;
+        .detail-value {
+            color: #777;
+            margin-left: 5px;
         }
 
-        .section-title {
-            font-size: 1.8em;
-            color: #333;
-            margin-bottom: 20px;
+        .expertise-tags {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
         }
 
-        .match-count {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            margin-left: 15px;
+        .expertise-tag {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 3px 8px;
+            border-radius: 12px;
             font-size: 0.8em;
+        }
+
+        /* Matching Section Styles */
+        .matching-section {
+            background: linear-gradient(135deg, #f8f9ff, #e8ecff);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .profile-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .matches-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
+            margin-top: 20px;
         }
 
         .match-card {
@@ -134,7 +327,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             border: 2px solid transparent;
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
         .match-card:hover {
@@ -183,26 +375,6 @@
             margin-left: auto;
         }
 
-        .match-details {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .match-item {
-            font-size: 0.9em;
-        }
-
-        .match-label {
-            font-weight: bold;
-            color: #555;
-        }
-
-        .match-value {
-            color: #777;
-            margin-left: 5px;
-        }
-
         .common-interests {
             background: rgba(102, 126, 234, 0.1);
             padding: 10px;
@@ -232,29 +404,17 @@
             font-size: 1.1em;
         }
 
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .success-message {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
         }
 
         .error-message {
-            background: rgba(255, 107, 107, 0.1);
+            background: rgba(231, 76, 60, 0.1);
             color: #e74c3c;
             padding: 15px;
             border-radius: 10px;
@@ -263,21 +423,19 @@
         }
 
         @media (max-width: 768px) {
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
+            .form-row {
+                grid-template-columns: 1fr;
             }
             
-            .profile-avatar {
-                margin-right: 0;
-                margin-bottom: 15px;
-            }
-            
-            .profile-details {
+            .profiles-grid {
                 grid-template-columns: 1fr;
             }
             
             .matches-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-selector {
                 grid-template-columns: 1fr;
             }
         }
@@ -287,195 +445,356 @@
     <div class="container">
         <h1>🤝 Peer Coaching Matcher</h1>
         
-        <div class="profile-section">
-            <div class="profile-header">
-                <div class="profile-avatar" id="userAvatar">JW</div>
-                <div class="profile-info">
-                    <h2 id="userName">Loading...</h2>
-                    <p id="userTitle">Loading profile...</p>
-                </div>
-            </div>
-            
-            <div class="profile-details" id="profileDetails">
-                <!-- Profile details will be populated here -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('add-profile')">Add Profile</button>
+            <button class="tab-button" onclick="switchTab('view-profiles')">View Profiles</button>
+            <button class="tab-button" onclick="switchTab('find-matches')">Find Matches</button>
+        </div>
+
+        <!-- Add Profile Tab -->
+        <div id="add-profile" class="tab-content active">
+            <div class="form-section">
+                <h2>Add New Profile</h2>
+                <form id="profileForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="country">Country *</label>
+                            <select id="country" name="country" required>
+                                <option value="">Select Country</option>
+                                <option value="France">France</option>
+                                <option value="Germany">Germany</option>
+                                <option value="Spain">Spain</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="Italy">Italy</option>
+                                <option value="Netherlands">Netherlands</option>
+                                <option value="Belgium">Belgium</option>
+                                <option value="Switzerland">Switzerland</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="industry">Industry *</label>
+                            <select id="industry" name="industry" required>
+                                <option value="">Select Industry</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Education">Education</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Consulting">Consulting</option>
+                                <option value="Automotive">Automotive</option>
+                                <option value="Manufacturing">Manufacturing</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="role">Current Role *</label>
+                            <input type="text" id="role" name="role" required placeholder="e.g., Product Manager, Consultant">
+                        </div>
+                        <div class="form-group">
+                            <label for="experience">Years of Experience *</label>
+                            <select id="experience" name="experience" required>
+                                <option value="">Select Experience</option>
+                                <option value="0-2">0-2 years</option>
+                                <option value="3-5">3-5 years</option>
+                                <option value="6-10">6-10 years</option>
+                                <option value="11-15">11-15 years</option>
+                                <option value="16-20">16-20 years</option>
+                                <option value="20+">20+ years</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expertiseInput">Areas of Expertise</label>
+                            <input type="text" id="expertiseInput" placeholder="Type and press Enter to add">
+                            <div class="tags-container" id="expertiseTags"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="challengesInput">Current Challenges</label>
+                            <input type="text" id="challengesInput" placeholder="Type and press Enter to add">
+                            <div class="tags-container" id="challengesTags"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="goalsInput">Goals</label>
+                            <input type="text" id="goalsInput" placeholder="Type and press Enter to add">
+                            <div class="tags-container" id="goalsTags"></div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button type="submit" class="btn btn-primary">Add Profile</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <div class="matches-section">
-            <div class="section-title">
-                Potential Coaching Partners
-                <span class="match-count" id="matchCount">0 matches</span>
+        <!-- View Profiles Tab -->
+        <div id="view-profiles" class="tab-content">
+            <div class="form-section">
+                <h2>Registered Profiles</h2>
+                <p>Total profiles: <span id="profileCount">0</span></p>
             </div>
-            
-            <div id="matchesContainer">
-                <div class="loading">
-                    <div class="spinner"></div>
+            <div id="profilesList"></div>
+        </div>
+
+        <!-- Find Matches Tab -->
+        <div id="find-matches" class="tab-content">
+            <div class="matching-section">
+                <h2>Find Coaching Matches</h2>
+                <div class="profile-selector">
+                    <div class="form-group">
+                        <label for="profileSelect">Select Profile:</label>
+                        <select id="profileSelect" onchange="findMatches()">
+                            <option value="">Choose a profile</option>
+                        </select>
+                    </div>
                 </div>
+                <div id="matchesContainer"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Sample profile database - in a real app, this would come from a backend
-        const profileDatabase = [
-            {
-                name: "Sarah Chen",
-                email: "sarah.chen@example.com",
-                country: "France",
-                industry: "Technology",
-                role: "Product Manager",
-                experience: "11-15",
-                expertise: ["Leadership", "Product Strategy", "Team Management", "Data Analytics"],
-                challenges: ["Cross-functional collaboration", "Stakeholder management", "Product roadmapping"],
-                goals: ["Career advancement", "Leadership development"]
-            },
-            {
-                name: "Marc Dubois",
-                email: "marc.dubois@example.com",
-                country: "France",
-                industry: "Education",
-                role: "Training Manager",
-                experience: "16-20",
-                expertise: ["Leadership", "HR", "Training Development", "Change Management"],
-                challenges: ["Team motivation", "Training effectiveness", "Digital transformation"],
-                goals: ["Organizational impact", "Professional growth"]
-            },
-            {
-                name: "Elena Rodriguez",
-                email: "elena.rodriguez@example.com",
-                country: "Spain",
-                industry: "Consulting",
-                role: "Senior Consultant",
-                experience: "11-15",
-                expertise: ["Strategy", "Leadership", "Client Relations", "Business Development"],
-                challenges: ["Client acquisition", "Team leadership", "Work-life balance"],
-                goals: ["Business development", "Leadership excellence"]
-            },
-            {
-                name: "James Wilson",
-                email: "james.wilson@example.com",
-                country: "UK",
-                industry: "Automotive",
-                role: "Operations Manager",
-                experience: "16-20",
-                expertise: ["Operations", "Leadership", "Process Improvement", "Automotive"],
-                challenges: ["Supply chain optimization", "Team performance", "Cost management"],
-                goals: ["Operational excellence", "Strategic thinking"]
-            },
-            {
-                name: "Anna Kowalski",
-                email: "anna.kowalski@example.com",
-                country: "Germany",
-                industry: "Technology",
-                role: "IT Director",
-                experience: "16-20",
-                expertise: ["IT", "Tech", "Leadership", "Digital Transformation"],
-                challenges: ["Technology adoption", "Team scaling", "Innovation management"],
-                goals: ["Technical leadership", "Innovation"]
+        // Global variables
+        let profiles = [];
+        let expertise = [];
+        let challenges = [];
+        let goals = [];
+
+        // Load data from localStorage on page load
+        function loadData() {
+            const savedProfiles = localStorage.getItem('coachingProfiles');
+            if (savedProfiles) {
+                profiles = JSON.parse(savedProfiles);
             }
-        ];
-
-        let currentUser = null;
-
-        function getInitials(name) {
-            return name.split(' ').map(word => word[0]).join('').toUpperCase();
+            
+            // Add some sample profiles if none exist
+            if (profiles.length === 0) {
+                profiles = [
+                    {
+                        id: 1,
+                        name: "Sarah Chen",
+                        email: "sarah.chen@example.com",
+                        country: "France",
+                        industry: "Technology",
+                        role: "Product Manager",
+                        experience: "11-15",
+                        expertise: ["Leadership", "Product Strategy", "Team Management", "Data Analytics"],
+                        challenges: ["Cross-functional collaboration", "Stakeholder management", "Product roadmapping"],
+                        goals: ["Career advancement", "Leadership development"]
+                    },
+                    {
+                        id: 2,
+                        name: "Marc Dubois",
+                        email: "marc.dubois@example.com",
+                        country: "France",
+                        industry: "Education",
+                        role: "Training Manager",
+                        experience: "16-20",
+                        expertise: ["Leadership", "HR", "Training Development", "Change Management"],
+                        challenges: ["Team motivation", "Training effectiveness", "Digital transformation"],
+                        goals: ["Organizational impact", "Professional growth"]
+                    }
+                ];
+                saveData();
+            }
+            
+            updateProfileSelect();
+            displayProfiles();
         }
 
-        function parseURLParameters() {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            // Debug: log all parameters
-            console.log('URL search string:', window.location.search);
-            console.log('All URL parameters:');
-            for (let [key, value] of urlParams.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-            
-            const name = urlParams.get('name');
-            const email = urlParams.get('email');
-            const country = urlParams.get('country');
-            const industry = urlParams.get('industry');
-            const role = urlParams.get('role');
-            const experience = urlParams.get('experience');
-            const expertise = urlParams.get('expertise');
-            const challenges = urlParams.get('challenges');
-            const goals = urlParams.get('goals');
-            
-            console.log('Individual parameters:', {name, email, country, industry, role, experience, expertise, challenges, goals});
-            
-            // If no URL parameters found, use demo data for testing
-            if (!name && !email && !country && window.location.search === '') {
-                console.log('No URL parameters found, using demo data');
-                currentUser = {
-                    name: "Jeremy Williams",
-                    email: "jeremyprof.williams@gmail.com",
-                    country: "France",
-                    industry: "Education",
-                    role: "Consultant",
-                    experience: "16-20",
-                    expertise: ["Leadership", "Sales", "IT", "Tech", "HR", "Automotive"],
-                    challenges: ["Team motivation", "Persuasion", "Sales and marketing"],
-                    goals: ["Success"]
-                };
-            } else {
-                currentUser = {
-                    name: name && name.trim() !== '' ? name : null,
-                    email: email && email.trim() !== '' ? email : null,
-                    country: country && country.trim() !== '' ? country : null,
-                    industry: industry && industry.trim() !== '' ? industry : null,
-                    role: role && role.trim() !== '' ? role : null,
-                    experience: experience && experience.trim() !== '' ? experience : null,
-                    expertise: expertise ? expertise.split(',').map(s => s.trim()).filter(s => s !== '') : [],
-                    challenges: challenges ? challenges.split(',').map(s => s.trim()).filter(s => s !== '') : [],
-                    goals: goals ? goals.split(',').map(s => s.trim()).filter(s => s !== '') : []
-                };
-            }
-
-            console.log('Parsed user profile:', currentUser);
-            console.log('User name check:', currentUser.name, typeof currentUser.name);
-            return currentUser;
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('coachingProfiles', JSON.stringify(profiles));
         }
 
-        function displayUserProfile(user) {
-            // Update header
-            document.getElementById('userAvatar').textContent = getInitials(user.name);
-            document.getElementById('userName').textContent = user.name;
-            document.getElementById('userTitle').textContent = `${user.role} in ${user.industry}`;
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Update displays when switching tabs
+            if (tabName === 'view-profiles') {
+                displayProfiles();
+            } else if (tabName === 'find-matches') {
+                updateProfileSelect();
+            }
+        }
 
-            // Update profile details
-            const profileDetails = document.getElementById('profileDetails');
-            profileDetails.innerHTML = `
-                <div class="detail-item">
-                    <div class="detail-label">Location</div>
-                    <div class="detail-value">${user.country}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Industry</div>
-                    <div class="detail-value">${user.industry}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Role</div>
-                    <div class="detail-value">${user.role}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Experience</div>
-                    <div class="detail-value">${user.experience} years</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Expertise</div>
-                    <div class="detail-value">${user.expertise.join(', ')}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Challenges</div>
-                    <div class="detail-value">${user.challenges.join(', ')}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Goals</div>
-                    <div class="detail-value">${user.goals.join(', ')}</div>
+        // Tag management functions
+        function setupTagInput(inputId, tagsContainerId, tagsArray) {
+            const input = document.getElementById(inputId);
+            const container = document.getElementById(tagsContainerId);
+
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const value = input.value.trim();
+                    if (value && !tagsArray.includes(value)) {
+                        tagsArray.push(value);
+                        updateTagsDisplay(container, tagsArray);
+                        input.value = '';
+                    }
+                }
+            });
+        }
+
+        function updateTagsDisplay(container, tagsArray) {
+            container.innerHTML = tagsArray.map((tag, index) => `
+                <span class="tag">
+                    ${tag}
+                    <span class="tag-remove" onclick="removeTag(${index}, '${container.id}')">×</span>
+                </span>
+            `).join('');
+        }
+
+        function removeTag(index, containerId) {
+            let tagsArray;
+            if (containerId === 'expertiseTags') tagsArray = expertise;
+            else if (containerId === 'challengesTags') tagsArray = challenges;
+            else if (containerId === 'goalsTags') tagsArray = goals;
+
+            tagsArray.splice(index, 1);
+            updateTagsDisplay(document.getElementById(containerId), tagsArray);
+        }
+
+        // Form handling
+        function clearForm() {
+            document.getElementById('profileForm').reset();
+            expertise = [];
+            challenges = [];
+            goals = [];
+            updateTagsDisplay(document.getElementById('expertiseTags'), expertise);
+            updateTagsDisplay(document.getElementById('challengesTags'), challenges);
+            updateTagsDisplay(document.getElementById('goalsTags'), goals);
+        }
+
+        // Profile management
+        function addProfile(profileData) {
+            const newProfile = {
+                id: Date.now(),
+                ...profileData,
+                expertise: [...expertise],
+                challenges: [...challenges],
+                goals: [...goals]
+            };
+
+            profiles.push(newProfile);
+            saveData();
+            updateProfileSelect();
+            displayProfiles();
+
+            // Show success message
+            showMessage('Profile added successfully!', 'success');
+            
+            // Clear form
+            clearForm();
+        }
+
+        function deleteProfile(id) {
+            if (confirm('Are you sure you want to delete this profile?')) {
+                profiles = profiles.filter(profile => profile.id !== id);
+                saveData();
+                updateProfileSelect();
+                displayProfiles();
+                showMessage('Profile deleted successfully!', 'success');
+            }
+        }
+
+        function displayProfiles() {
+            const container = document.getElementById('profilesList');
+            const countElement = document.getElementById('profileCount');
+            
+            countElement.textContent = profiles.length;
+
+            if (profiles.length === 0) {
+                container.innerHTML = '<div class="no-matches"><h3>No profiles added yet</h3><p>Add some profiles using the "Add Profile" tab to get started.</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="profiles-grid">
+                    ${profiles.map(profile => `
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <div class="profile-avatar">${getInitials(profile.name)}</div>
+                                <div>
+                                    <div class="profile-name">${profile.name}</div>
+                                    <div class="profile-role">${profile.role} • ${profile.industry}</div>
+                                </div>
+                                <div class="profile-actions">
+                                    <button class="btn btn-danger btn-small" onclick="deleteProfile(${profile.id})">Delete</button>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Location:</span>
+                                    <span class="detail-value">${profile.country}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Experience:</span>
+                                    <span class="detail-value">${profile.experience} years</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Email:</span>
+                                    <span class="detail-value">${profile.email}</span>
+                                </div>
+                            </div>
+
+                            ${profile.expertise.length > 0 ? `
+                                <div style="margin-top: 15px;">
+                                    <div class="detail-label">Expertise:</div>
+                                    <div class="expertise-tags">
+                                        ${profile.expertise.map(exp => `<span class="expertise-tag">${exp}</span>`).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
                 </div>
             `;
         }
 
+        function updateProfileSelect() {
+            const select = document.getElementById('profileSelect');
+            select.innerHTML = '<option value="">Choose a profile</option>' + 
+                profiles.map(profile => `<option value="${profile.id}">${profile.name} - ${profile.role}</option>`).join('');
+        }
+
+        // Matching algorithm
         function calculateCompatibility(user1, user2) {
             let score = 0;
             let factors = [];
@@ -500,7 +819,7 @@
             );
             score += expertiseOverlap.length * 10;
             if (expertiseOverlap.length > 0) {
-                factors.push(`${expertiseOverlap.length} expertise areas`);
+                factors.push(`${expertiseOverlap.length} shared expertise areas`);
             }
 
             // Challenge/goal complementarity
@@ -510,8 +829,11 @@
                 user2Challenges.some(c2 => c2.includes(c) || c.includes(c2))
             );
             score += challengeOverlap.length * 8;
+            if (challengeOverlap.length > 0) {
+                factors.push(`${challengeOverlap.length} similar challenges`);
+            }
 
-            // Geographic proximity (same country)
+            // Geographic proximity
             if (user1.country.toLowerCase() === user2.country.toLowerCase()) {
                 score += 15;
                 factors.push('Same country');
@@ -520,9 +842,25 @@
             return { score: Math.min(score, 100), factors };
         }
 
-        function findMatches(user, database) {
-            const matches = database.map(candidate => {
-                const compatibility = calculateCompatibility(user, candidate);
+        function findMatches() {
+            const selectedId = document.getElementById('profileSelect').value;
+            const container = document.getElementById('matchesContainer');
+            
+            if (!selectedId) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const selectedProfile = profiles.find(p => p.id == selectedId);
+            const otherProfiles = profiles.filter(p => p.id != selectedId);
+
+            if (otherProfiles.length === 0) {
+                container.innerHTML = '<div class="no-matches"><h3>No other profiles to match with</h3><p>Add more profiles to find potential coaching partners.</p></div>';
+                return;
+            }
+
+            const matches = otherProfiles.map(candidate => {
+                const compatibility = calculateCompatibility(selectedProfile, candidate);
                 return {
                     ...candidate,
                     compatibilityScore: compatibility.score,
@@ -530,30 +868,17 @@
                 };
             });
 
-            // Sort by compatibility score (descending) and filter out very low scores
-            return matches
-                .filter(match => match.compatibilityScore >= 20)
-                .sort((a, b) => b.compatibilityScore - a.compatibilityScore);
+            // Sort by compatibility score
+            matches.sort((a, b) => b.compatibilityScore - a.compatibilityScore);
+
+            displayMatches(matches, selectedProfile);
         }
 
-        function displayMatches(matches) {
+        function displayMatches(matches, selectedProfile) {
             const container = document.getElementById('matchesContainer');
-            const matchCount = document.getElementById('matchCount');
-            
-            matchCount.textContent = `${matches.length} ${matches.length === 1 ? 'match' : 'matches'}`;
-
-            if (matches.length === 0) {
-                container.innerHTML = `
-                    <div class="no-matches">
-                        <h3>No matches found</h3>
-                        <p>We couldn't find any coaching partners matching your profile at this time. Try updating your profile or check back later!</p>
-                    </div>
-                `;
-                return;
-            }
 
             const matchesHTML = matches.map(match => {
-                const commonExpertise = currentUser.expertise.filter(e => 
+                const commonExpertise = selectedProfile.expertise.filter(e => 
                     match.expertise.some(me => me.toLowerCase().includes(e.toLowerCase()) || e.toLowerCase().includes(me.toLowerCase()))
                 );
 
@@ -568,24 +893,24 @@
                             <div class="compatibility-score">${match.compatibilityScore}% match</div>
                         </div>
                         
-                        <div class="match-details">
-                            <div class="match-item">
-                                <span class="match-label">Location:</span>
-                                <span class="match-value">${match.country}</span>
+                        <div class="profile-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Location:</span>
+                                <span class="detail-value">${match.country}</span>
                             </div>
-                            <div class="match-item">
-                                <span class="match-label">Experience:</span>
-                                <span class="match-value">${match.experience} years</span>
+                            <div class="detail-item">
+                                <span class="detail-label">Experience:</span>
+                                <span class="detail-value">${match.experience} years</span>
                             </div>
-                            <div class="match-item">
-                                <span class="match-label">Expertise:</span>
-                                <span class="match-value">${match.expertise.join(', ')}</span>
+                            <div class="detail-item">
+                                <span class="detail-label">Email:</span>
+                                <span class="detail-value">${match.email}</span>
                             </div>
                         </div>
 
                         ${commonExpertise.length > 0 ? `
                             <div class="common-interests">
-                                <div class="match-label">Common Expertise:</div>
+                                <div class="detail-label">Common Expertise:</div>
                                 <div class="interests-tags">
                                     ${commonExpertise.map(interest => `<span class="interest-tag">${interest}</span>`).join('')}
                                 </div>
@@ -601,63 +926,66 @@
                 `;
             }).join('');
 
-            container.innerHTML = `<div class="matches-grid">${matchesHTML}</div>`;
+            container.innerHTML = `
+                <h3 style="margin-bottom: 20px;">Matches for ${selectedProfile.name}</h3>
+                <div class="matches-grid">${matchesHTML}</div>
+            `;
         }
 
-        function initializeApp() {
-            try {
-                console.log('Initializing app...');
-                console.log('Current URL:', window.location.href);
+        // Utility functions
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase();
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${type}-message`;
+            messageDiv.textContent = message;
+            
+            // Insert at the top of the active tab
+            const activeTab = document.querySelector('.tab-content.active');
+            activeTab.insertBefore(messageDiv, activeTab.firstChild);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 3000);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved data
+            loadData();
+            
+            // Setup tag inputs
+            setupTagInput('expertiseInput', 'expertiseTags', expertise);
+            setupTagInput('challengesInput', 'challengesTags', challenges);
+            setupTagInput('goalsInput', 'goalsTags', goals);
+            
+            // Setup form submission
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
                 
-                // Parse URL parameters
-                const user = parseURLParameters();
+                const formData = new FormData(this);
+                const profileData = Object.fromEntries(formData.entries());
                 
-                if (!user.name || user.name === null) {
-                    console.log('No valid user name found');
-                    
-                    // Show error only if we're not using demo data
-                    if (window.location.search !== '') {
-                        document.getElementById('matchesContainer').innerHTML = `
-                            <div class="error-message">
-                                <strong>Error:</strong> No user profile found in URL parameters. 
-                                Please ensure all required parameters are provided.
-                                <br><br>Current URL: ${window.location.href}
-                                <br>Parameters found: ${Object.keys(user).filter(key => user[key] !== null && user[key] !== '').join(', ')}
-                            </div>
-                        `;
-                        
-                        // Still show a basic profile even with error
-                        document.getElementById('userAvatar').textContent = 'U';
-                        document.getElementById('userName').textContent = 'Unknown User';
-                        document.getElementById('userTitle').textContent = 'Profile not loaded';
-                        return;
-                    }
+                // Validate required fields
+                if (!profileData.name || !profileData.email || !profileData.country || 
+                    !profileData.industry || !profileData.role || !profileData.experience) {
+                    showMessage('Please fill in all required fields.', 'error');
+                    return;
                 }
-
-                // Display user profile
-                displayUserProfile(user);
-
-                // Find and display matches
-                setTimeout(() => {
-                    const matches = findMatches(user, profileDatabase);
-                    console.log('Found matches:', matches);
-                    displayMatches(matches);
-                }, 1000); // Simulate loading time
-
-            } catch (error) {
-                console.error('Error initializing app:', error);
-                document.getElementById('matchesContainer').innerHTML = `
-                    <div class="error-message">
-                        <strong>Error:</strong> Failed to load profile matcher. Please check your parameters and try again.
-                        <br><br>Error details: ${error.message}
-                        <br>URL: ${window.location.href}
-                    </div>
-                `;
-            }
-        }
-
-        // Initialize the app when page loads
-        document.addEventListener('DOMContentLoaded', initializeApp);
+                
+                // Check for duplicate email
+                if (profiles.some(p => p.email.toLowerCase() === profileData.email.toLowerCase())) {
+                    showMessage('A profile with this email already exists.', 'error');
+                    return;
+                }
+                
+                addProfile(profileData);
+            });
+        });
     </script>
 </body>
 </html>
+
