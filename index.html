@@ -709,7 +709,7 @@
             }
         }
 
-        // Tag management functions
+        // FIXED: Enhanced tag input setup to prevent duplicate tags and handle input clearing
         function setupTagInput(inputId, tagsContainerId, tagsArray) {
             const input = document.getElementById(inputId);
             const container = document.getElementById(tagsContainerId);
@@ -721,7 +721,10 @@
                     if (value && !tagsArray.includes(value)) {
                         tagsArray.push(value);
                         updateTagsDisplay(container, tagsArray);
-                        input.value = '';
+                        input.value = ''; // Clear input after adding tag
+                    } else if (value && tagsArray.includes(value)) {
+                        showMessage('Tag already exists.', 'error');
+                        input.value = ''; // Clear input on duplicate
                     }
                 }
             });
@@ -755,40 +758,44 @@
             updateTagsDisplay(document.getElementById(containerId), tagsArray);
         }
 
-        // FIXED Form handling
+        // FIXED: Clear form completely, including all tag arrays and input fields
         function clearForm() {
-            document.getElementById('profileForm').reset();
+            const form = document.getElementById('profileForm');
+            form.reset();
+            
+            // Clear global tag arrays
             expertise = [];
             challenges = [];
             goals = [];
+            
+            // Update tag displays to reflect empty arrays
             updateTagsDisplay(document.getElementById('expertiseTags'), expertise);
             updateTagsDisplay(document.getElementById('challengesTags'), challenges);
             updateTagsDisplay(document.getElementById('goalsTags'), goals);
             
-            // Reset button text
-            const submitButton = document.querySelector('#profileForm button[type="submit"]');
-            if (submitButton) {
-                submitButton.textContent = 'Add Profile';
-            }
+            // Clear input fields explicitly
+            document.getElementById('expertiseInput').value = '';
+            document.getElementById('challengesInput').value = '';
+            document.getElementById('goalsInput').value = '';
             
-            // Remove edit ID
+            // Reset button text and edit state
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.textContent = 'Add Profile';
+            
+            // Remove editing ID
             const hiddenId = document.getElementById('editingId');
-            if (hiddenId) {
-                hiddenId.remove();
-            }
+            if (hiddenId) hiddenId.remove();
             
             // Hide cancel button
             const cancelButton = document.getElementById('cancelEdit');
-            if (cancelButton) {
-                cancelButton.style.display = 'none';
-            }
+            if (cancelButton) cancelButton.style.display = 'none';
             
-            console.log('✅ Form cleared and reset to add mode');
+            console.log('✅ Form fully cleared: arrays reset, inputs cleared, edit mode disabled');
         }
 
-        // FIXED Edit Profile Function with proper array handling
+        // FIXED: Enhanced editProfile function to properly handle tag arrays
         function editProfile(id) {
-            console.log('🔧 Starting edit for ID:', id, typeof id);
+            console.log('🔧 Editing profile ID:', id);
             
             const profile = profiles.find(p => p.id == id);
             if (!profile) {
@@ -797,16 +804,13 @@
                 return;
             }
             
-            console.log('✅ Profile found:', profile.name);
-            console.log('Profile arrays:', profile.expertise, profile.challenges, profile.goals);
-            
-            // Clear form first
+            // Clear form and arrays first to prevent residual data
             clearForm();
             
             // Switch to add profile tab
             switchTab('add-profile');
             
-            // Populate form after a short delay
+            // Populate form after ensuring clean state
             setTimeout(() => {
                 try {
                     // Populate basic fields
@@ -817,14 +821,14 @@
                     document.getElementById('role').value = profile.role || '';
                     document.getElementById('experience').value = profile.experience || '';
                     
-                    // CRITICAL FIX: Properly set global arrays with profile data
+                    // Set global arrays with deep copies to prevent mutation
                     expertise = Array.isArray(profile.expertise) ? [...profile.expertise] : [];
                     challenges = Array.isArray(profile.challenges) ? [...profile.challenges] : [];
                     goals = Array.isArray(profile.goals) ? [...profile.goals] : [];
                     
-                    console.log('✅ Arrays set:', { expertise, challenges, goals });
+                    console.log('✅ Populated arrays:', { expertise, challenges, goals });
                     
-                    // CRITICAL FIX: Force update tag displays immediately
+                    // Update tag displays
                     updateTagsDisplay(document.getElementById('expertiseTags'), expertise);
                     updateTagsDisplay(document.getElementById('challengesTags'), challenges);
                     updateTagsDisplay(document.getElementById('goalsTags'), goals);
@@ -854,15 +858,15 @@
                         cancelButton.className = 'btn btn-secondary';
                         cancelButton.textContent = 'Cancel Edit';
                         cancelButton.style.marginLeft = '10px';
-                        cancelButton.onclick = cancelEdit;
+                        cancelButton.onclick = clearForm; // Use clearForm directly
                         submitButton.parentNode.insertBefore(cancelButton, submitButton.nextSibling);
                     }
                     cancelButton.style.display = 'inline-block';
                     
-                    console.log('✅ Edit mode set with ID:', hiddenId.value);
-                    
+                    console.log('✅ Edit mode fully set for ID:', id);
                 } catch (error) {
-                    console.error('❌ Error in edit setup:', error);
+                    console.error('❌ Error setting up edit mode:', error);
+                    showMessage('Error loading profile for editing.', 'error');
                 }
             }, 100);
         }
