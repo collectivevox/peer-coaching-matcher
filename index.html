@@ -255,6 +255,30 @@
             display: none;
         }
 
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .notification.success {
+            background: #4CAF50;
+        }
+
+        .notification.warning {
+            background: #ff9800;
+        }
+
+        .notification.error {
+            background: #f44336;
+        }
+
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -675,4 +699,142 @@
 
         function findBestMatch(anchor, currentGroup, candidates, strategy) {
             let bestCandidate = null;
-            let bestScore =
+            let bestScore = -1;
+            
+            candidates.forEach(candidate => {
+                let score = 0;
+                
+                switch (strategy) {
+                    case 'balanced':
+                        score = calculateBalancedScore(anchor, candidate, currentGroup);
+                        break;
+                    case 'experience':
+                        score = calculateExperienceScore(anchor, candidate, currentGroup);
+                        break;
+                    case 'industry':
+                        score = calculateIndustryScore(anchor, candidate, currentGroup);
+                        break;
+                    case 'geographic':
+                        score = calculateGeographicScore(anchor, candidate, currentGroup);
+                        break;
+                }
+                
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestCandidate = candidate;
+                }
+            });
+            
+            return bestCandidate;
+        }
+
+        function calculateBalancedScore(anchor, candidate, group) {
+            let score = 0;
+            
+            // Different industries bonus
+            if (anchor.industry !== candidate.industry) score += 3;
+            
+            // Different countries bonus
+            if (anchor.country !== candidate.country) score += 2;
+            
+            // Complementary experience levels
+            const expLevels = ['0-2', '3-5', '6-10', '11-15', '16-20', '20+'];
+            const anchorExp = expLevels.indexOf(anchor.experience);
+            const candidateExp = expLevels.indexOf(candidate.experience);
+            const expDiff = Math.abs(anchorExp - candidateExp);
+            if (expDiff >= 2) score += 2;
+            
+            // Diverse expertise
+            const commonExpertise = anchor.expertise.filter(e => candidate.expertise.includes(e));
+            if (commonExpertise.length === 0) score += 1;
+            
+            // Avoid same role in group
+            const sameRole = group.some(m => m.role === candidate.role);
+            if (!sameRole) score += 1;
+            
+            return score;
+        }
+
+        function calculateExperienceScore(anchor, candidate, group) {
+            const expLevels = ['0-2', '3-5', '6-10', '11-15', '16-20', '20+'];
+            const anchorExp = expLevels.indexOf(anchor.experience);
+            const candidateExp = expLevels.indexOf(candidate.experience);
+            return Math.abs(anchorExp - candidateExp);
+        }
+
+        function calculateIndustryScore(anchor, candidate, group) {
+            return anchor.industry !== candidate.industry ? 3 : 0;
+        }
+
+        function calculateGeographicScore(anchor, candidate, group) {
+            return anchor.country !== candidate.country ? 3 : 0;
+        }
+
+        function calculateDiversity(group) {
+            const countries = new Set(group.map(m => m.country));
+            const industries = new Set(group.map(m => m.industry));
+            const roles = new Set(group.map(m => m.role));
+            
+            return {
+                geographic: countries.size,
+                industrial: industries.size,
+                hierarchical: roles.size
+            };
+        }
+
+        function generateMatchReason(group, strategy) {
+            const reasons = [];
+            
+            const countries = new Set(group.map(m => m.country));
+            const industries = new Set(group.map(m => m.industry));
+            const experiences = group.map(m => m.experience);
+            
+            if (countries.size === group.length) {
+                reasons.push("Perfect geographic diversity");
+            } else if (countries.size > 1) {
+                reasons.push("Good geographic spread");
+            }
+            
+            if (industries.size === group.length) {
+                reasons.push("Complete industry diversity");
+            } else if (industries.size > 1) {
+                reasons.push("Cross-industry perspectives");
+            }
+            
+            const expLevels = ['0-2', '3-5', '6-10', '11-15', '16-20', '20+'];
+            const expIndices = experiences.map(e => expLevels.indexOf(e));
+            const expRange = Math.max(...expIndices) - Math.min(...expIndices);
+            
+            if (expRange >= 3) {
+                reasons.push("Balanced experience levels");
+            }
+            
+            // Check for complementary expertise
+            const allExpertise = group.flatMap(m => m.expertise);
+            const uniqueExpertise = new Set(allExpertise);
+            if (uniqueExpertise.size >= group.length * 2) {
+                reasons.push("Complementary skill sets");
+            }
+            
+            return reasons.length > 0 ? reasons.join(" • ") : "Algorithmically optimized match";
+        }
+
+        function displayMatches() {
+            const resultsContainer = document.getElementById('matchingResults');
+            resultsContainer.innerHTML = '';
+            
+            if (matchedGroups.length === 0) {
+                resultsContainer.innerHTML = '<p>No matches could be generated with current criteria.</p>';
+                return;
+            }
+            
+            matchedGroups.forEach(group => {
+                const groupCard = document.createElement('div');
+                groupCard.className = 'group-card';
+                groupCard.innerHTML = `
+                    <h3>🎯 Group ${group.id}</h3>
+                    <div class="group-members">
+                        ${group.members.map(member => `
+                            <div class="group-member">
+                                <h4>${member.name}</h4>
+                                <p>
