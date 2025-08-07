@@ -984,4 +984,333 @@
 
             // Experience level match
             if (user1.experience === user2.experience) {
-                score +=
+                score += 15;
+                factors.push('Similar experience');
+            }
+
+            // Expertise overlap
+            const user1Expertise = user1.expertise.map(e => e.toLowerCase());
+            const user2Expertise = user2.expertise.map(e => e.toLowerCase());
+            const expertiseOverlap = user1Expertise.filter(e => 
+                user2Expertise.some(e2 => e2.includes(e) || e.includes(e2))
+            );
+            score += expertiseOverlap.length * 10;
+            if (expertiseOverlap.length > 0) {
+                factors.push(`${expertiseOverlap.length} shared expertise areas`);
+            }
+
+            // Challenge/goal complementarity
+            const user1Challenges = user1.challenges.map(c => c.toLowerCase());
+            const user2Challenges = user2.challenges.map(c => c.toLowerCase());
+            const challengeOverlap = user1Challenges.filter(c => 
+                user2Challenges.some(c2 => c2.includes(c) || c.includes(c2))
+            );
+            score += challengeOverlap.length * 8;
+            if (challengeOverlap.length > 0) {
+                factors.push(`${challengeOverlap.length} similar challenges`);
+            }
+
+            // Geographic proximity
+            if (user1.country.toLowerCase() === user2.country.toLowerCase()) {
+                score += 15;
+                factors.push('Same country');
+            }
+
+            return { score: Math.min(score, 100), factors };
+        }
+
+        function findMatches() {
+            const selectedId = document.getElementById('profileSelect').value;
+            const container = document.getElementById('matchesContainer');
+            
+            if (!selectedId) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const selectedProfile = profiles.find(p => p.id == selectedId);
+            const otherProfiles = profiles.filter(p => p.id != selectedId);
+
+            if (otherProfiles.length === 0) {
+                container.innerHTML = '<div class="no-matches"><h3>No other profiles to match with</h3><p>Add more profiles to find potential coaching partners.</p></div>';
+                return;
+            }
+
+            const matches = otherProfiles.map(candidate => {
+                const compatibility = calculateCompatibility(selectedProfile, candidate);
+                return {
+                    ...candidate,
+                    compatibilityScore: compatibility.score,
+                    compatibilityFactors: compatibility.factors
+                };
+            });
+
+            // Sort by compatibility score
+            matches.sort((a, b) => b.compatibilityScore - a.compatibilityScore);
+
+            displayMatches(matches, selectedProfile);
+        }
+
+        function displayMatches(matches, selectedProfile) {
+            const container = document.getElementById('matchesContainer');
+
+            const matchesHTML = matches.map(match => {
+                const commonExpertise = selectedProfile.expertise.filter(e => 
+                    match.expertise.some(me => me.toLowerCase().includes(e.toLowerCase()) || e.toLowerCase().includes(me.toLowerCase()))
+                );
+
+                return `
+                    <div class="match-card">
+                        <div class="match-header">
+                            <div class="match-avatar">${getInitials(match.name)}</div>
+                            <div>
+                                <div class="match-name">${match.name}</div>
+                                <div class="match-role">${match.role} • ${match.industry}</div>
+                            </div>
+                            <div class="compatibility-score">${match.compatibilityScore}% match</div>
+                        </div>
+                        
+                        <div class="profile-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Location:</span>
+                                <span class="detail-value">${match.country}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Experience:</span>
+                                <span class="detail-value">${match.experience} years</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Email:</span>
+                                <span class="detail-value">${match.email}</span>
+                            </div>
+                        </div>
+
+                        ${commonExpertise.length > 0 ? `
+                            <div class="common-interests">
+                                <div class="detail-label">Common Expertise:</div>
+                                <div class="interests-tags">
+                                    ${commonExpertise.map(interest => `<span class="interest-tag">${interest}</span>`).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${match.compatibilityFactors.length > 0 ? `
+                            <div style="margin-top: 10px; font-size: 0.8em; color: #666;">
+                                Match factors: ${match.compatibilityFactors.join(', ')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <h3 style="margin-bottom: 20px;">Matches for ${selectedProfile.name}</h3>
+                <div class="matches-grid">${matchesHTML}</div>
+            `;
+        }
+
+        // Utility functions
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase();
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${type}-message`;
+            messageDiv.textContent = message;
+            
+            // Insert at the top of the active tab
+            const activeTab = document.querySelector('.tab-content.active');
+            activeTab.insertBefore(messageDiv, activeTab.firstChild);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 3000);
+        }
+
+        // Debug functions
+        function debugProfileData() {
+            console.log('Current profiles:', profiles);
+            console.log('LocalStorage data:', localStorage.getItem('coachingProfiles'));
+        }
+
+        // Make debug function accessible from browser console
+        window.debugProfiles = debugProfileData;
+
+        // Debug function to test form submission state
+        window.debugFormSubmit = function() {
+            const hiddenId = document.getElementById('editingId');
+            console.log('🔍 Form Debug:');
+            console.log('Hidden ID element exists:', !!hiddenId);
+            console.log('Hidden ID value:', hiddenId ? hiddenId.value : 'NO HIDDEN ID');
+            console.log('Submit button text:', document.querySelector('#profileForm button[type="submit"]').textContent);
+            console.log('Current profiles count:', profiles.length);
+            console.log('Profile being edited:', hiddenId ? profiles.find(p => p.id == hiddenId.value) : 'NONE');
+        }
+
+        // Testing commands accessible from browser console
+        window.testEdit = function() {
+            console.log('Current profiles:', profiles);
+            console.log('localStorage data:', localStorage.getItem('coachingProfiles'));
+            console.log('Edit mode check:', document.getElementById('editingId') ? 'EDIT MODE' : 'ADD MODE');
+        }
+
+        window.clearStorage = function() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        window.forceRefresh = forceRefreshDisplays;
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved data
+            loadData();
+            
+            // Setup tag inputs
+            setupTagInput('expertiseInput', 'expertiseTags', expertise);
+            setupTagInput('challengesInput', 'challengesTags', challenges);
+            setupTagInput('goalsInput', 'goalsTags', goals);
+            
+            // FIXED Form submission handler
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                console.log('=== FORM SUBMISSION DEBUG ===');
+                
+                const formData = new FormData(this);
+                const profileData = Object.fromEntries(formData.entries());
+                
+                // Get editing ID more reliably
+                let editingId = '';
+                const hiddenField = document.getElementById('editingId');
+                if (hiddenField && hiddenField.value) {
+                    editingId = hiddenField.value.toString().trim();
+                }
+                
+                console.log('Editing ID found:', editingId);
+                console.log('Form data:', profileData);
+                console.log('Current profiles array length:', profiles.length);
+                
+                // Validate required fields
+                if (!profileData.name || !profileData.email || !profileData.country || 
+                    !profileData.industry || !profileData.role || !profileData.experience) {
+                    showMessage('Please fill in all required fields.', 'error');
+                    return;
+                }
+                
+                if (editingId) {
+                    // === EDIT MODE ===
+                    console.log('Processing as EDIT for ID:', editingId);
+                    
+                    // Find profile by ID
+                    let profileIndex = -1;
+                    for (let i = 0; i < profiles.length; i++) {
+                        if (profiles[i].id.toString() === editingId) {
+                            profileIndex = i;
+                            break;
+                        }
+                    }
+                    
+                    console.log('Profile found at index:', profileIndex);
+                    
+                    if (profileIndex >= 0) {
+                        // Check for duplicate email (excluding current profile)
+                        const emailExists = profiles.some((p, index) => 
+                            index !== profileIndex && p.email.toLowerCase() === profileData.email.toLowerCase()
+                        );
+                        
+                        if (emailExists) {
+                            showMessage('A profile with this email already exists.', 'error');
+                            return;
+                        }
+                        
+                        // Update profile
+                        const originalId = profiles[profileIndex].id;
+                        profiles[profileIndex] = {
+                            id: originalId, // Keep original ID
+                            name: profileData.name,
+                            email: profileData.email,
+                            country: profileData.country,
+                            industry: profileData.industry,
+                            role: profileData.role,
+                            experience: profileData.experience,
+                            expertise: [...expertise],
+                            challenges: [...challenges],
+                            goals: [...goals]
+                        };
+                        
+                        console.log('Profile updated:', profiles[profileIndex]);
+                        
+                        // Force save
+                        try {
+                            localStorage.setItem('coachingProfiles', JSON.stringify(profiles));
+                            console.log('✅ Data saved to localStorage');
+                        } catch (error) {
+                            console.error('❌ Save failed:', error);
+                            showMessage('Error saving changes. Please try again.', 'error');
+                            return;
+                        }
+                        
+                        // Refresh displays
+                        updateProfileSelect();
+                        displayProfiles();
+                        
+                        showMessage(`✅ ${profileData.name} updated successfully!`, 'success');
+                        
+                        // Reset form
+                        clearForm();
+                        
+                        // Switch to view profiles to see changes
+                        setTimeout(() => {
+                            switchTab('view-profiles');
+                        }, 1000);
+                        
+                    } else {
+                        console.error('❌ Profile not found for editing');
+                        showMessage('Error: Profile not found for updating.', 'error');
+                    }
+                    
+                } else {
+                    // === ADD MODE ===
+                    console.log('Processing as NEW profile');
+                    
+                    // Check for duplicate email
+                    if (profiles.some(p => p.email.toLowerCase() === profileData.email.toLowerCase())) {
+                        showMessage('A profile with this email already exists.', 'error');
+                        return;
+                    }
+                    
+                    // Create new profile
+                    const newProfile = {
+                        id: Date.now(),
+                        name: profileData.name,
+                        email: profileData.email,
+                        country: profileData.country,
+                        industry: profileData.industry,
+                        role: profileData.role,
+                        experience: profileData.experience,
+                        expertise: [...expertise],
+                        challenges: [...challenges],
+                        goals: [...goals]
+                    };
+                    
+                    profiles.push(newProfile);
+                    console.log('New profile added:', newProfile);
+                    
+                    // Save and refresh
+                    localStorage.setItem('coachingProfiles', JSON.stringify(profiles));
+                    updateProfileSelect();
+                    displayProfiles();
+                    
+                    showMessage(`✅ ${newProfile.name} added successfully!`, 'success');
+                    clearForm();
+                }
+                
+                console.log('=== END FORM SUBMISSION ===');
+            });
+        });
+    </script>
+</body>
+</html>
