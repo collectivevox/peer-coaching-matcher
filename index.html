@@ -724,12 +724,73 @@
         }
 
         function deleteProfile(id) {
-            if (confirm('Are you sure you want to delete this profile?')) {
-                profiles = profiles.filter(profile => profile.id !== id);
-                saveData();
-                updateProfileSelect();
-                displayProfiles();
-                showMessage('Profile deleted successfully!', 'success');
+        {
+    const profile = profiles.find(p => p.id === id);
+    if (!profile) return;
+    
+    // Switch to add profile tab
+    switchTab('add-profile');
+    
+    // Populate the form with existing data
+    document.getElementById('name').value = profile.name;
+    document.getElementById('email').value = profile.email;
+    document.getElementById('country').value = profile.country;
+    document.getElementById('industry').value = profile.industry;
+    document.getElementById('role').value = profile.role;
+    document.getElementById('experience').value = profile.experience;
+    
+    // Set the tag arrays
+    expertise = [...profile.expertise];
+    challenges = [...profile.challenges];
+    goals = [...profile.goals];
+    
+    // Update tag displays
+    updateTagsDisplay(document.getElementById('expertiseTags'), expertise);
+    updateTagsDisplay(document.getElementById('challengesTags'), challenges);
+    updateTagsDisplay(document.getElementById('goalsTags'), goals);
+    
+    // Change form to edit mode
+    const form = document.getElementById('profileForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.textContent = 'Update Profile';
+    submitButton.className = 'btn btn-primary';
+    
+    // Add hidden field for profile ID
+    let hiddenId = document.getElementById('editingId');
+    if (!hiddenId) {
+        hiddenId = document.createElement('input');
+        hiddenId.type = 'hidden';
+        hiddenId.id = 'editingId';
+        form.appendChild(hiddenId);
+    }
+    hiddenId.value = id;
+    
+    // Add cancel edit button
+    let cancelButton = document.getElementById('cancelEdit');
+    if (!cancelButton) {
+        cancelButton = document.createElement('button');
+        cancelButton.type = 'button';
+        cancelButton.id = 'cancelEdit';
+        cancelButton.className = 'btn btn-secondary';
+        cancelButton.textContent = 'Cancel Edit';
+        cancelButton.onclick = cancelEdit;
+        submitButton.parentNode.insertBefore(cancelButton, submitButton.nextSibling);
+    }
+    cancelButton.style.display = 'inline-block';
+}
+
+function cancelEdit() {
+    clearForm();
+    const submitButton = document.querySelector('#profileForm button[type="submit"]');
+    submitButton.textContent = 'Add Profile';
+    
+    const hiddenId = document.getElementById('editingId');
+    if (hiddenId) hiddenId.value = '';
+    
+    const cancelButton = document.getElementById('cancelEdit');
+    if (cancelButton) cancelButton.style.display = 'none';
+}
+
             }
         }
 
